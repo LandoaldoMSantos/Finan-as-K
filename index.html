@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Safe monkey-patch for performance.measure DataCloneError (e.g. React 19 / Scheduler / Recharts / extensions)
+      (function() {
+        if (typeof window !== 'undefined' && window.performance && typeof window.performance.measure === 'function') {
+          var originalMeasure = window.performance.measure;
+          window.performance.measure = function(name, startMarkOrOptions, endMark) {
+            try {
+              return originalMeasure.apply(this, arguments);
+            } catch (e) {
+              if (e && (e.name === 'DataCloneError' || (e.message && e.message.indexOf('clone') !== -1))) {
+                try {
+                  if (startMarkOrOptions && typeof startMarkOrOptions === 'object') {
+                    var safeOptions = {};
+                    for (var key in startMarkOrOptions) {
+                      if (startMarkOrOptions.hasOwnProperty(key) && key !== 'detail') {
+                        safeOptions[key] = startMarkOrOptions[key];
+                      }
+                    }
+                    return originalMeasure.call(this, name, safeOptions, endMark);
+                  }
+                } catch (innerError) {
+                  // ignore
+                }
+              }
+              return undefined;
+            }
+          };
+        }
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aplicativo completo de finanças pessoais com suporte a contas correntes, categorização hierárquica, etiquetas, transações recorrentes e importador inteligente de QIF e CSV." />
+    <title>Finanças Pessoais - Gestão Financeira Completa</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

@@ -1,0 +1,6 @@
+{
+  "name": "Finanças Pessoais",
+  "description": "Aplicativo completo de finanças pessoais com suporte a contas correntes, categorização hierárquica, etiquetas, transações recorrentes e importador inteligente de QIF e CSV.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
