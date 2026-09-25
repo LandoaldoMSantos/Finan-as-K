@@ -234,16 +234,21 @@ export const api = {
 
   // Google Drive Backup & Restore
   getBackupStatus: () =>
-    fetchAPI<{ backupEnabled: boolean; lastBackupAt: string | null; backupDriveFolder?: string }>('/api/backup/status'),
+    fetchAPI<{
+      backupEnabled: boolean;
+      lastBackupAt: string | null;
+      backupDriveFolder?: string;
+      backupDriveFolderId?: string | null;
+    }>('/api/backup/status'),
   toggleBackupSetting: (enabled: boolean) =>
     fetchAPI<{ success: boolean; backupEnabled: boolean }>('/api/backup/toggle', {
       method: 'POST',
       body: JSON.stringify({ enabled }),
     }),
-  updateBackupFolder: (folder: string) =>
-    fetchAPI<{ success: boolean; backupDriveFolder: string }>('/api/backup/folder', {
+  updateBackupFolder: (folder: string, folderId?: string | null) =>
+    fetchAPI<{ success: boolean; backupDriveFolder: string; backupDriveFolderId?: string | null }>('/api/backup/folder', {
       method: 'POST',
-      body: JSON.stringify({ folder }),
+      body: JSON.stringify({ folder, folderId: folderId || null }),
     }),
   listDriveFolders: (accessToken: string, parentId?: string, search?: string) => {
     let url = `/api/backup/drive/folders?accessToken=${encodeURIComponent(accessToken)}`;
@@ -256,10 +261,10 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ accessToken, folderName, parentId }),
     }),
-  runBackup: (accessToken: string, folder?: string) =>
+  runBackup: (accessToken: string, folder?: string, folderId?: string | null) =>
     fetchAPI<{ success: boolean; message: string; filename: string; fileId: string; folderName?: string; lastBackupAt: string }>('/api/backup/run', {
       method: 'POST',
-      body: JSON.stringify({ accessToken, folder }),
+      body: JSON.stringify({ accessToken, folder, folderId: folderId || null }),
     }),
   exportBackupJson: () =>
     fetchAPI<any>('/api/backup/export'),
@@ -268,10 +273,10 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ backupData, mode }),
     }),
-  listDriveBackups: (accessToken: string, folder?: string) => {
-    const url = folder 
-      ? `/api/backup/drive/list?accessToken=${encodeURIComponent(accessToken)}&folder=${encodeURIComponent(folder)}`
-      : `/api/backup/drive/list?accessToken=${encodeURIComponent(accessToken)}`;
+  listDriveBackups: (accessToken: string, folder?: string, folderId?: string | null) => {
+    let url = `/api/backup/drive/list?accessToken=${encodeURIComponent(accessToken)}`;
+    if (folder) url += `&folder=${encodeURIComponent(folder)}`;
+    if (folderId) url += `&folderId=${encodeURIComponent(folderId)}`;
     return fetchAPI<{ 
       files: Array<{ id: string; name: string; size?: string; createdTime: string }>;
       folder?: string;

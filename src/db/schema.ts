@@ -9,6 +9,7 @@ export const users = pgTable('users', {
   lastBackupAt: timestamp('last_backup_at'),
   backupEnabled: boolean('backup_enabled').default(false),
   backupDriveFolder: text('backup_drive_folder').default('Finanças K - Backups'),
+  backupDriveFolderId: text('backup_drive_folder_id'), // Google Drive folder ID (stable)
   createdAt: timestamp('created_at').defaultNow(),
 });
 

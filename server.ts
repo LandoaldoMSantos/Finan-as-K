@@ -17,6 +17,17 @@ async function startServer() {
   app.use(express.json({ limit: '100mb' }));
   app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
+  // Ensure new schema columns exist (safe, idempotent)
+  try {
+    await db.execute(sql`
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS backup_drive_folder_id text
+    `);
+    console.log('Schema check: backup_drive_folder_id column ensured.');
+  } catch (e) {
+    console.warn('Schema ensure (backup_drive_folder_id) skipped or failed:', e);
+  }
+
   // Helper: auto-generate standard categories for a new user if none exist
   async function ensureDefaultCategories(dbUserId: number) {
     try {
@@ -1438,7 +1449,8 @@ async function startServer() {
       res.json({
         backupEnabled: userRecord.backupEnabled ?? false,
         lastBackupAt: userRecord.lastBackupAt ?? null,
-        backupDriveFolder: userRecord.backupDriveFolder || 'Finanças K - Backups'
+        backupDriveFolder: userRecord.backupDriveFolder || 'Finanças K - Backups',
+        backupDriveFolderId: userRecord.backupDriveFolderId || null
       });
     } catch (error: any) {
       console.error('Error fetching backup status:', error);
@@ -1471,7 +1483,7 @@ async function startServer() {
   app.post('/api/backup/folder', requireAuth, async (req: AuthRequest, res) => {
     try {
       const dbUserId = req.dbUser!.id;
-      let { folder } = req.body;
+      let { folder, folderId } = req.body;
 
       if (typeof folder !== 'string' || !folder.trim()) {
         folder = 'Finanças K - Backups';
@@ -1481,11 +1493,21 @@ async function startServer() {
       const cleanFolder = folder.trim().replace(/^[/\\]+|[/\\]+$/g, '');
       const finalFolder = cleanFolder || 'Finanças K - Backups';
 
+      // folderId is optional for backward compatibility; when provided it is the stable Drive ID
+      const finalFolderId = (typeof folderId === 'string' && folderId.trim()) ? folderId.trim() : null;
+
       await db.update(users)
-        .set({ backupDriveFolder: finalFolder })
+        .set({
+          backupDriveFolder: finalFolder,
+          backupDriveFolderId: finalFolderId
+        })
         .where(eq(users.id, dbUserId));
 
-      res.json({ success: true, backupDriveFolder: finalFolder });
+      res.json({
+        success: true,
+        backupDriveFolder: finalFolder,
+        backupDriveFolderId: finalFolderId
+      });
     } catch (error: any) {
       console.error('Error updating backup folder:', error);
       res.status(500).json({ error: error.message });
@@ -1962,18 +1984,32 @@ async function startServer() {
         return res.status(400).json({ error: 'Token do Google Drive não fornecido.' });
       }
 
-      // Check if folder is explicitly passed in query or fetch from user's record
+      // Prefer explicit query params, then user's saved folder ID, then name-based lookup
       let targetFolder = (req.query.folder as string)?.trim();
-      if (!targetFolder) {
-        const [userRecord] = await db.select({ backupDriveFolder: users.backupDriveFolder })
+      let folderId = (req.query.folderId as string)?.trim() || null;
+
+      if (!folderId || !targetFolder) {
+        const [userRecord] = await db.select({
+          backupDriveFolder: users.backupDriveFolder,
+          backupDriveFolderId: users.backupDriveFolderId
+        })
           .from(users)
           .where(eq(users.id, dbUserId))
           .limit(1);
-        targetFolder = userRecord?.backupDriveFolder || 'Finanças K - Backups';
+
+        if (!targetFolder) {
+          targetFolder = userRecord?.backupDriveFolder || 'Finanças K - Backups';
+        }
+        if (!folderId && userRecord?.backupDriveFolderId) {
+          folderId = userRecord.backupDriveFolderId;
+        }
       }
 
-      // 1. Search for folder on Google Drive
-      const folderId = await findDriveFolder(accessToken, targetFolder);
+      // If we still don't have a folder ID, fall back to name-based search (backward compatibility)
+      if (!folderId) {
+        folderId = await findDriveFolder(accessToken, targetFolder);
+      }
+
       if (!folderId) {
         return res.json({ files: [], folder: targetFolder, folderId: null });
       }
@@ -2105,16 +2141,31 @@ async function startServer() {
       const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
 
       // 3. Resolve destination folder on user's Google Drive
+      // Prefer explicit folderId from body or saved ID (stable), fall back to name-based getOrCreate
       let targetFolder = (req.body.folder as string)?.trim();
-      if (!targetFolder) {
-        const [userRecord] = await db.select({ backupDriveFolder: users.backupDriveFolder })
+      let folderId = (req.body.folderId as string)?.trim() || null;
+
+      if (!folderId || !targetFolder) {
+        const [userRecord] = await db.select({
+          backupDriveFolder: users.backupDriveFolder,
+          backupDriveFolderId: users.backupDriveFolderId
+        })
           .from(users)
           .where(eq(users.id, dbUserId))
           .limit(1);
-        targetFolder = userRecord?.backupDriveFolder || 'Finanças K - Backups';
+
+        if (!targetFolder) {
+          targetFolder = userRecord?.backupDriveFolder || 'Finanças K - Backups';
+        }
+        if (!folderId && userRecord?.backupDriveFolderId) {
+          folderId = userRecord.backupDriveFolderId;
+        }
       }
 
-      const folderId = await getOrCreateDriveFolder(accessToken, targetFolder);
+      // Only create/search by name if we don't already have a stable folder ID
+      if (!folderId) {
+        folderId = await getOrCreateDriveFolder(accessToken, targetFolder || 'Finanças K - Backups');
+      }
 
       // 4. Construct RFC 2387 multipart/related upload body and send to Drive
       const filename = `backup_financas_k_${new Date().toISOString().slice(0, 10)}_${Date.now()}.zip`;

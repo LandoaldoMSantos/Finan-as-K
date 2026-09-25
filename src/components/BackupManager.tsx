@@ -71,6 +71,8 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
   // Google Drive backups & directory state
   const [driveFolder, setDriveFolder] = useState('Finanças K - Backups');
   const [savedFolder, setSavedFolder] = useState('Finanças K - Backups');
+  const [driveFolderId, setDriveFolderId] = useState<string | null>(null);
+  const [savedFolderId, setSavedFolderId] = useState<string | null>(null);
   const [savingFolder, setSavingFolder] = useState(false);
   const [availableFolders, setAvailableFolders] = useState<Array<{ id: string; name: string; parents?: string[] }>>([]);
   const [loadingFolders, setLoadingFolders] = useState(false);
@@ -110,6 +112,13 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
         setDriveFolder(res.backupDriveFolder);
         setSavedFolder(res.backupDriveFolder);
       }
+      if (res.backupDriveFolderId) {
+        setDriveFolderId(res.backupDriveFolderId);
+        setSavedFolderId(res.backupDriveFolderId);
+      } else {
+        setDriveFolderId(null);
+        setSavedFolderId(null);
+      }
     } catch (error) {
       console.error('Erro ao buscar status do backup:', error);
     } finally {
@@ -118,14 +127,15 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
   };
 
   // Fetch Google Drive backups list for configured directory
-  const fetchDriveBackups = async (token?: string, folderToUse?: string) => {
+  const fetchDriveBackups = async (token?: string, folderToUse?: string, folderIdToUse?: string | null) => {
     const tokenToUse = token || googleToken;
     if (!tokenToUse) return;
 
     setLoadingDriveFiles(true);
     try {
       const targetFolder = folderToUse !== undefined ? folderToUse : (savedFolder || driveFolder);
-      const res = await api.listDriveBackups(tokenToUse, targetFolder);
+      const targetFolderId = folderIdToUse !== undefined ? folderIdToUse : (savedFolderId || driveFolderId);
+      const res = await api.listDriveBackups(tokenToUse, targetFolder, targetFolderId);
       setDriveFiles(res.files || []);
     } catch (error: any) {
       console.error('Erro ao listar backups do Google Drive:', error);
@@ -134,17 +144,20 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
     }
   };
 
-  // Save Google Drive destination directory
-  const handleSaveDriveFolder = async (folderToSaveOverride?: string) => {
+  // Save Google Drive destination directory (name + stable folder ID)
+  const handleSaveDriveFolder = async (folderToSaveOverride?: string, folderIdToSave?: string | null) => {
     const targetFolder = (folderToSaveOverride !== undefined ? folderToSaveOverride : driveFolder).trim() || 'Finanças K - Backups';
+    const targetFolderId = folderIdToSave !== undefined ? folderIdToSave : driveFolderId;
     setSavingFolder(true);
     try {
-      const res = await api.updateBackupFolder(targetFolder);
+      const res = await api.updateBackupFolder(targetFolder, targetFolderId);
       setDriveFolder(res.backupDriveFolder);
       setSavedFolder(res.backupDriveFolder);
+      setDriveFolderId(res.backupDriveFolderId || null);
+      setSavedFolderId(res.backupDriveFolderId || null);
       toast.success(`Pasta do Google Drive definida como "${res.backupDriveFolder}"!`);
       if (googleToken) {
-        fetchDriveBackups(googleToken, res.backupDriveFolder);
+        fetchDriveBackups(googleToken, res.backupDriveFolder, res.backupDriveFolderId);
       }
     } catch (err: any) {
       console.error('Erro ao salvar pasta de backup:', err);
@@ -245,25 +258,26 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
     }
   };
 
-  // Select a folder: builds the relative path from breadcrumbs
-  const handleSelectFolderFromPicker = (folderName: string) => {
-    // Build path: omit root, join path components
+  // Select a folder from the list: builds path from breadcrumbs + uses the real Drive folder ID
+  const handleSelectFolderFromPicker = (folder: { id: string; name: string }) => {
+    // Build human-readable path: omit root, join path components
     const pathParts = folderBreadcrumbs
       .slice(1) // remove root
       .map(c => c.name);
-    
-    // Add current selected folder if not already the active breadcrumb
-    if (folderName && folderName !== folderBreadcrumbs[folderBreadcrumbs.length - 1]?.name) {
-      pathParts.push(folderName);
+
+    // Add selected folder name if it's not already the last breadcrumb
+    if (folder.name && folder.name !== folderBreadcrumbs[folderBreadcrumbs.length - 1]?.name) {
+      pathParts.push(folder.name);
     }
-    
-    const finalPath = pathParts.length > 0 ? pathParts.join('/') : (folderName || 'Finanças K - Backups');
+
+    const finalPath = pathParts.length > 0 ? pathParts.join('/') : (folder.name || 'Finanças K - Backups');
     setDriveFolder(finalPath);
-    handleSaveDriveFolder(finalPath);
+    setDriveFolderId(folder.id);
+    handleSaveDriveFolder(finalPath, folder.id);
     setShowFolderModal(false);
   };
 
-  // Select the currently open folder (e.g. while inside a directory)
+  // Select the currently open folder (uses the breadcrumb ID — the stable Drive ID)
   const handleSelectCurrentOpenFolder = () => {
     const currentParent = folderBreadcrumbs[folderBreadcrumbs.length - 1];
     if (currentParent.id === 'root') {
@@ -273,7 +287,8 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
     const pathParts = folderBreadcrumbs.slice(1).map(c => c.name);
     const finalPath = pathParts.join('/');
     setDriveFolder(finalPath);
-    handleSaveDriveFolder(finalPath);
+    setDriveFolderId(currentParent.id);
+    handleSaveDriveFolder(finalPath, currentParent.id);
     setShowFolderModal(false);
   };
 
@@ -285,9 +300,9 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
 
   useEffect(() => {
     if (googleToken) {
-      fetchDriveBackups(googleToken, savedFolder);
+      fetchDriveBackups(googleToken, savedFolder, savedFolderId);
     }
-  }, [googleToken, savedFolder]);
+  }, [googleToken, savedFolder, savedFolderId]);
 
   // Handle escape key to dismiss restore modals
   useEffect(() => {
@@ -353,7 +368,8 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
       });
 
       const targetFolder = savedFolder || driveFolder;
-      const res = await api.runBackup(tokenToUse, targetFolder);
+      const targetFolderId = savedFolderId || driveFolderId;
+      const res = await api.runBackup(tokenToUse, targetFolder, targetFolderId);
       setLastBackupAt(res.lastBackupAt);
       const destinationFolder = res.folderName || targetFolder;
       const successMsg = `Backup realizado com sucesso! Arquivo salvo na pasta "${destinationFolder}" do Google Drive: "${res.filename}"`;
@@ -363,8 +379,8 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
       });
       toast.success(`Backup salvo com sucesso na pasta "${destinationFolder}" do Google Drive!`);
       refreshUserSync();
-      // Refresh list
-      fetchDriveBackups(tokenToUse, destinationFolder);
+      // Refresh list using the stable folder ID when available
+      fetchDriveBackups(tokenToUse, destinationFolder, targetFolderId);
     } catch (err: any) {
       console.error(err);
       const errMsg = `Falha no backup: ${err.message || 'Erro desconhecido'}`;
@@ -872,7 +888,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
           {googleToken ? (
             <button
               type="button"
-              onClick={() => fetchDriveBackups(googleToken, savedFolder)}
+              onClick={() => fetchDriveBackups(googleToken, savedFolder, savedFolderId)}
               disabled={loadingDriveFiles}
               className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold py-3 px-4 rounded-2xl flex items-center justify-center gap-2 transition-all cursor-pointer border border-gray-200 dark:border-gray-700 focus-visible:ring-2 focus-visible:ring-emerald-500 text-xs"
               id="btn-refresh-drive-backups"
@@ -889,7 +905,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   const token = await connectGoogleDrive();
                   if (token) {
                     toast.success('Conectado com sucesso ao seu Google Drive!');
-                    fetchDriveBackups(token, savedFolder);
+                    fetchDriveBackups(token, savedFolder, savedFolderId);
                   }
                 } catch (e) {
                   console.error(e);
@@ -1376,7 +1392,13 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               ) : (
                 availableFolders.map((f) => {
                   const currentPath = folderBreadcrumbs.slice(1).map(c => c.name).concat([f.name]).join('/');
-                  const isSelected = savedFolder === currentPath || driveFolder === currentPath || savedFolder === f.name;
+                  // Prefer matching by stable Drive folder ID; fall back to path/name for older saved configs
+                  const isSelected =
+                    (savedFolderId && savedFolderId === f.id) ||
+                    (driveFolderId && driveFolderId === f.id) ||
+                    savedFolder === currentPath ||
+                    driveFolder === currentPath ||
+                    savedFolder === f.name;
 
                   return (
                     <div
@@ -1404,7 +1426,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                       {/* Action buttons: choose as destination */}
                       <button
                         type="button"
-                        onClick={() => handleSelectFolderFromPicker(f.name)}
+                        onClick={() => handleSelectFolderFromPicker(f)}
                         className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                           isSelected
                             ? 'bg-emerald-600 text-white shadow-xs'
