@@ -78,12 +78,12 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
             Mostrando <strong className="text-gray-900 dark:text-white font-mono font-bold">{transactions.length}</strong> de <strong className="text-gray-900 dark:text-white font-mono font-bold">{totalCount}</strong> transações
           </span>
           {isLoading && (
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-600 dark:text-emerald-400 ml-1" aria-hidden="true" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-700 dark:text-emerald-400 ml-1" aria-hidden="true" />
           )}
         </div>
 
         {isVirtual && (
-          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+          <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
             Virtualização Ativa ({startIndex + 1}–{Math.min(endIndex, transactions.length)})
           </span>
         )}
@@ -110,7 +110,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
           {/* Desktop Table */}
           <table className="hidden md:table w-full border-collapse text-left text-xs font-medium text-gray-600 dark:text-gray-400">
             <thead className="sticky top-0 z-10">
-              <tr className="bg-gray-50 dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">
+              <tr className="bg-gray-50 dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">
                 <th scope="col" className="py-3.5 px-4">Data</th>
                 <th scope="col" className="py-3.5 px-4">Beneficiário / Detalhes</th>
                 <th scope="col" className="py-3.5 px-4">Categoria / Etiquetas</th>
@@ -162,7 +162,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-0.5">
-                        <Calendar className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
+                        <Calendar className="w-3.5 h-3.5 text-gray-500" aria-hidden="true" />
                         <span>{formatDate(t.date)}</span>
                         {t.account && (
                           <>
@@ -189,26 +189,26 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
                     <div className="flex flex-wrap items-center gap-1.5">
                       {t.splits && t.splits.length > 0 ? (
-                        <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md text-[11px] font-semibold border border-emerald-200 dark:border-emerald-800">
+                        <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md text-xs font-semibold border border-emerald-200 dark:border-emerald-800">
                           {t.splits.length} Categorias
                         </span>
                       ) : t.category ? (
-                        <span className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md text-[11px] font-medium">
+                        <span className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md text-xs font-medium">
                           {t.category.name}
                         </span>
                       ) : (
-                        <span className="italic text-gray-400 text-[11px]">Sem categoria</span>
+                        <span className="italic text-gray-500 text-xs">Sem categoria</span>
                       )}
 
                       {t.memo && (
-                        <span className="text-[11px] text-gray-400 truncate max-w-[180px]">
+                        <span className="text-xs text-gray-500 truncate max-w-[180px]">
                           • {t.memo}
                         </span>
                       )}
                     </div>
 
                     {bal !== undefined && (
-                      <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400 ml-auto">
+                      <div className="text-xs font-mono text-gray-500 dark:text-gray-400 ml-auto">
                         Saldo: <span className="font-bold text-gray-800 dark:text-gray-200">{formatCurrency(bal)}</span>
                       </div>
                     )}
@@ -220,7 +220,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
                       {t.tags.map(tag => (
                         <span
                           key={tag.id}
-                          className="text-[10px] bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-mono font-semibold"
+                          className="text-xs bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-mono font-semibold"
                         >
                           #{tag.name}
                         </span>
@@ -276,12 +276,12 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
           >
             {isLoadingMore ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                <Loader2 className="w-4 h-4 animate-spin text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
                 Carregando mais lançamentos...
               </>
             ) : (
               <>
-                <ChevronDown className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <ChevronDown className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                 Carregar mais ({Math.min(limit, totalCount - transactions.length)} restantes)
               </>
             )}

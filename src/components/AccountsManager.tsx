@@ -222,10 +222,10 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <Landmark className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <Landmark className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
             Contas Correntes
-          </h2>
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Cadastre e edite suas contas bancárias para apurar saldos automáticos de qualquer dispositivo
           </p>
@@ -239,7 +239,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
               setInitialBalanceInput('0,00');
               setShowAddForm(true);
             }}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 self-start sm:self-auto"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 self-start sm:self-auto"
           >
             <Plus className="w-4 h-4" />
             Nova Conta Corrente
@@ -270,7 +270,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 setShowAddForm(false);
                 setEditingId(null);
               }}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 rounded-lg"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 rounded-lg"
               aria-label="Fechar formulário de conta"
             >
               <X className="w-4 h-4" aria-hidden="true" />
@@ -307,7 +307,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 className="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono"
                 required
               />
-              <p className="text-[10px] text-gray-400 mt-1">Use sinal negativo (-) para contas que começam negativas (ex: limite especial usado).</p>
+              <p className="text-xs text-gray-500 mt-1">Use sinal negativo (-) para contas que começam negativas (ex: limite especial usado).</p>
             </div>
           </div>
 
@@ -324,7 +324,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
             </button>
             <button
               type="submit"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition-all shadow-md shadow-emerald-600/10 cursor-pointer"
+              className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition-all shadow-md shadow-emerald-600/10 cursor-pointer"
             >
               Salvar Conta
             </button>
@@ -365,14 +365,14 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-xl">
+                      <div className="p-2.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-xl">
                         <Landmark className="w-5 h-5" aria-hidden="true" />
                       </div>
                       <div>
                         <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                           {acc.name}
                         </h3>
-                        <span className="text-[10px] bg-gray-50 dark:bg-gray-800 text-gray-400 px-2 py-0.5 rounded-md font-mono">
+                        <span className="text-xs bg-gray-50 dark:bg-gray-800 text-gray-500 px-2 py-0.5 rounded-md font-mono">
                           CORRENTE
                         </span>
                       </div>
@@ -383,7 +383,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                         onClick={() => startEdit(acc)}
                         title="Editar"
                         aria-label={`Editar conta ${acc.name}`}
-                        className="p-1.5 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/20 rounded-lg transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
+                        className="p-2 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/20 rounded-lg transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
                       >
                         <Edit3 className="w-4 h-4" aria-hidden="true" />
                       </button>
@@ -391,16 +391,16 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                         onClick={() => setDeleteTargetId(acc.id)}
                         title="Excluir"
                         aria-label={`Excluir conta ${acc.name}`}
-                        className="p-1.5 text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20 rounded-lg transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500"
+                        className="p-2 text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20 rounded-lg transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500"
                       >
                         <Trash2 className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 border-t border-b border-gray-100 dark:border-gray-800 py-3 font-mono text-[11px] sm:text-xs">
+                  <div className="grid grid-cols-3 gap-2 border-t border-b border-gray-100 dark:border-gray-800 py-3 font-mono text-xs sm:text-xs">
                     <div>
-                      <span className="block text-[8px] sm:text-[9px] font-sans font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      <span className="block text-xs sm:text-xs font-sans font-bold text-gray-500 uppercase tracking-wider mb-1">
                         Inicial
                       </span>
                       <span className="font-semibold text-gray-600 dark:text-gray-300">
@@ -408,25 +408,25 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                       </span>
                     </div>
                     <div>
-                      <span className="block text-[8px] sm:text-[9px] font-sans font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      <span className="block text-xs sm:text-xs font-sans font-bold text-gray-500 uppercase tracking-wider mb-1">
                         Saldo Atual
                       </span>
                       <span className={`font-bold ${
                         (acc.todayBalance ?? acc.initialBalance) >= 0 
-                          ? 'text-emerald-600 dark:text-emerald-400' 
-                          : 'text-rose-600 dark:text-rose-400'
+                          ? 'text-emerald-700 dark:text-emerald-400' 
+                          : 'text-rose-700 dark:text-rose-400'
                       }`}>
                         {formatCurrency(acc.todayBalance ?? acc.initialBalance)}
                       </span>
                     </div>
                     <div>
-                      <span className="block text-[8px] sm:text-[9px] font-sans font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      <span className="block text-xs sm:text-xs font-sans font-bold text-gray-500 uppercase tracking-wider mb-1">
                         Previsto
                       </span>
                       <span className={`font-bold ${
                         (acc.currentBalance ?? acc.initialBalance) >= 0 
-                          ? 'text-emerald-600/80 dark:text-emerald-400/80' 
-                          : 'text-rose-600/80 dark:text-rose-400/80'
+                          ? 'text-emerald-700 dark:text-emerald-400' 
+                          : 'text-rose-700 dark:text-rose-400'
                       }`}>
                         {formatCurrency(acc.currentBalance ?? acc.initialBalance)}
                       </span>
@@ -438,7 +438,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                   onClick={() => setSelectedExtratoAccount(acc)}
                   className={`mt-4 w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     isSelectedForExtrato
-                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/10'
+                      ? 'bg-emerald-700 text-white shadow-md shadow-emerald-600/10'
                       : 'bg-gray-50 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
                   }`}
                 >
@@ -457,11 +457,11 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-gray-100 dark:border-gray-800 pb-5">
             <div className="space-y-1">
-              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
                 Extrato Bancário de Período
               </span>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Landmark className="w-5 h-5 text-gray-400" />
+                <Landmark className="w-5 h-5 text-gray-500" />
                 {selectedExtratoAccount.name}
               </h3>
             </div>
@@ -472,7 +472,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 onClick={() => setPeriodType('thisMonth')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   periodType === 'thisMonth'
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-emerald-700 text-white'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-750'
                 }`}
               >
@@ -482,7 +482,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 onClick={() => setPeriodType('lastMonth')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   periodType === 'lastMonth'
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-emerald-700 text-white'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-750'
                 }`}
               >
@@ -492,7 +492,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 onClick={() => setPeriodType('last30')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   periodType === 'last30'
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-emerald-700 text-white'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-750'
                 }`}
               >
@@ -502,7 +502,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 onClick={() => setPeriodType('custom')}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   periodType === 'custom'
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-emerald-700 text-white'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-750'
                 }`}
               >
@@ -511,7 +511,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
 
               <button
                 onClick={() => setSelectedExtratoAccount(null)}
-                className="p-1.5 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/20 text-gray-400 dark:text-gray-500 rounded-lg ml-auto lg:ml-2"
+                className="p-2 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/20 text-gray-500 dark:text-gray-500 rounded-lg ml-auto lg:ml-2"
                 title="Fechar extrato"
                 aria-label="Fechar extrato bancário"
               >
@@ -524,7 +524,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
           {periodType === 'custom' && (
             <div className="flex flex-wrap gap-4 bg-gray-50 dark:bg-gray-950/40 p-4 rounded-xl border border-gray-150 dark:border-gray-800 max-w-lg">
               <div className="flex-1 min-w-[150px]">
-                <label htmlFor="extrato-start-date" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                <label htmlFor="extrato-start-date" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                   Data de Início
                 </label>
                 <input
@@ -536,7 +536,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                 />
               </div>
               <div className="flex-1 min-w-[150px]">
-                <label htmlFor="extrato-end-date" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                <label htmlFor="extrato-end-date" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                   Data de Fim
                 </label>
                 <input
@@ -554,54 +554,54 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-sm">
             {/* Saldo Inicial */}
             <div className="bg-gray-50 dark:bg-gray-950/40 border border-gray-150 dark:border-gray-850 p-4 rounded-xl">
-              <span className="block text-[10px] font-sans font-bold text-gray-400 uppercase tracking-wider mb-1">
+              <span className="block text-xs font-sans font-bold text-gray-500 uppercase tracking-wider mb-1">
                 Saldo Inicial do Período
               </span>
               <span className="text-base font-bold text-gray-900 dark:text-white">
                 {formatCurrency(extratoData.initialBalance)}
               </span>
-              <span className="block text-[9px] font-sans text-gray-400 mt-1">
+              <span className="block text-xs font-sans text-gray-500 mt-1">
                 Saldo em {formatDate(dateRange.start)}
               </span>
             </div>
 
             {/* Receitas */}
             <div className="bg-emerald-50/20 dark:bg-emerald-950/5 border border-emerald-100/40 dark:border-emerald-950/25 p-4 rounded-xl">
-              <span className="block text-[10px] font-sans font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <span className="block text-xs font-sans font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" /> Receitas do Período
               </span>
-              <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-base font-bold text-emerald-700 dark:text-emerald-400">
                 {formatCurrency(extratoData.revenues)}
               </span>
-              <span className="block text-[9px] font-sans text-gray-400 mt-1">
+              <span className="block text-xs font-sans text-gray-500 mt-1">
                 Soma de créditos no intervalo
               </span>
             </div>
 
             {/* Despesas */}
             <div className="bg-rose-50/20 dark:bg-rose-950/5 border border-rose-100/40 dark:border-rose-950/25 p-4 rounded-xl">
-              <span className="block text-[10px] font-sans font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <span className="block text-xs font-sans font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wider mb-1 flex items-center gap-1">
                 <TrendingDown className="w-3 h-3" /> Despesas do Período
               </span>
-              <span className="text-base font-bold text-rose-600 dark:text-rose-400">
+              <span className="text-base font-bold text-rose-700 dark:text-rose-400">
                 {formatCurrency(extratoData.expenses)}
               </span>
-              <span className="block text-[9px] font-sans text-gray-400 mt-1">
+              <span className="block text-xs font-sans text-gray-500 mt-1">
                 Soma de débitos no intervalo
               </span>
             </div>
 
             {/* Saldo Final */}
             <div className="bg-gray-50 dark:bg-gray-950/40 border border-gray-150 dark:border-gray-850 p-4 rounded-xl">
-              <span className="block text-[10px] font-sans font-bold text-gray-400 uppercase tracking-wider mb-1">
+              <span className="block text-xs font-sans font-bold text-gray-500 uppercase tracking-wider mb-1">
                 Saldo Final do Período
               </span>
               <span className={`text-base font-bold ${
-                extratoData.finalBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                extratoData.finalBalance >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
               }`}>
                 {formatCurrency(extratoData.finalBalance)}
               </span>
-              <span className="block text-[9px] font-sans text-gray-400 mt-1">
+              <span className="block text-xs font-sans text-gray-500 mt-1">
                 Saldo em {formatDate(dateRange.end)}
               </span>
             </div>
@@ -614,7 +614,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
             </h4>
 
             {extratoData.transactions.length === 0 ? (
-              <div className="bg-gray-50 dark:bg-gray-950/20 rounded-xl p-8 text-center text-sm text-gray-400 dark:text-gray-500">
+              <div className="bg-gray-50 dark:bg-gray-950/20 rounded-xl p-8 text-center text-sm text-gray-500 dark:text-gray-500">
                 <Calendar className="w-10 h-10 mx-auto mb-2 text-gray-300 dark:text-gray-800" />
                 Nenhuma transação registrada entre {formatDate(dateRange.start)} e {formatDate(dateRange.end)}.
               </div>
@@ -624,14 +624,14 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                   <div key={t.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white dark:bg-gray-900 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 text-xs font-medium transition-colors">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800/40 px-2 py-0.5 rounded-md border border-gray-100 dark:border-gray-800">
+                        <span className="text-xs font-mono text-gray-500 dark:text-gray-500 bg-gray-50 dark:bg-gray-800/40 px-2 py-0.5 rounded-md border border-gray-100 dark:border-gray-800">
                           {formatDate(t.date)}
                         </span>
                         <span className="font-bold text-gray-900 dark:text-white">
                           {t.payee}
                         </span>
                       </div>
-                      <div className="text-gray-400 dark:text-gray-500 text-[10px] flex items-center gap-1">
+                      <div className="text-gray-500 dark:text-gray-500 text-xs flex items-center gap-1">
                         <span>{t.category ? t.category.name : 'Sem Categoria'}</span>
                         {t.memo && (
                           <>
@@ -643,7 +643,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
                     </div>
 
                     <span className={`font-mono font-bold text-sm sm:text-right mt-1 sm:mt-0 ${
-                      t.type === 'credito' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                      t.type === 'credito' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
                     }`}>
                       {t.type === 'credito' ? '+' : '-'}{formatCurrency(t.amount)}
                     </span>
@@ -664,7 +664,7 @@ export const AccountsManager: React.FC<AccountsManagerProps> = ({
           aria-labelledby="delete-account-modal-title"
         >
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-xl">
-            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
+            <div className="flex items-center gap-3 text-rose-700 dark:text-rose-400">
               <div className="p-2.5 bg-rose-50 dark:bg-rose-950/40 rounded-xl">
                 <AlertTriangle className="w-5 h-5" aria-hidden="true" />
               </div>

@@ -250,10 +250,10 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <Upload className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+        <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <Upload className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
           Importador de Transações
-        </h2>
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Importe seus extratos antigos no formato CSV ou arquivos QIF nativos do KMyMoney / Quicken
         </p>
@@ -261,7 +261,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
       {accounts.length === 0 ? (
         <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-250 dark:border-amber-900 p-5 rounded-2xl flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-amber-700 dark:text-amber-400 mt-0.5" />
           <div>
             <h4 className="font-bold text-sm text-amber-800 dark:text-amber-300">Nenhuma Conta Cadastrada</h4>
             <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-1">
@@ -272,7 +272,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
       ) : importStats ? (
         /* Success Report Card */
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-3xl text-center space-y-6 shadow-sm animate-fade-in">
-          <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-sm">
+          <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-sm">
             <CheckCircle2 className="w-10 h-10" />
           </div>
 
@@ -285,24 +285,24 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
           <div className="grid grid-cols-2 gap-4 max-w-md mx-auto bg-gray-50 dark:bg-gray-950/40 border border-gray-150 dark:border-gray-850 p-4 rounded-2xl font-mono text-sm">
             <div className="p-2 border-r border-gray-200 dark:border-gray-800">
-              <span className="block text-[10px] font-sans font-bold text-gray-400 uppercase tracking-wider mb-1">
+              <span className="block text-xs font-sans font-bold text-gray-500 uppercase tracking-wider mb-1">
                 Lançados
               </span>
-              <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+              <span className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400">
                 {importStats.importedCount}
               </span>
-              <span className="block text-[10px] font-sans text-gray-400 mt-1">
+              <span className="block text-xs font-sans text-gray-500 mt-1">
                 Novas transações
               </span>
             </div>
             <div className="p-2">
-              <span className="block text-[10px] font-sans font-bold text-gray-400 uppercase tracking-wider mb-1">
+              <span className="block text-xs font-sans font-bold text-gray-500 uppercase tracking-wider mb-1">
                 {overwriteDuplicates ? 'Duplicados Atualizados' : 'Duplicados Somados'}
               </span>
               <span className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
                 {importStats.duplicateCount}
               </span>
-              <span className="block text-[10px] font-sans text-gray-400 mt-1">
+              <span className="block text-xs font-sans text-gray-500 mt-1">
                 {overwriteDuplicates ? 'Substituiu valores' : 'Somado ao valor original'}
               </span>
             </div>
@@ -310,7 +310,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
           <button
             onClick={resetState}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all"
           >
             Importar Outro Arquivo
           </button>
@@ -364,9 +364,9 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
               className="hidden"
             />
 
-            <div className="w-14 h-14 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 rounded-full flex items-center justify-center mx-auto shadow-inner" aria-hidden="true">
+            <div className="w-14 h-14 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-500 rounded-full flex items-center justify-center mx-auto shadow-inner" aria-hidden="true">
               {loading ? (
-                <RefreshCw className="w-7 h-7 animate-spin text-emerald-600" />
+                <RefreshCw className="w-7 h-7 animate-spin text-emerald-700 dark:text-emerald-400" />
               ) : (
                 <Upload className="w-7 h-7" />
               )}
@@ -376,7 +376,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
               <p className="font-bold text-sm text-gray-800 dark:text-white">
                 Arraste o extrato aqui ou clique para selecionar
               </p>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
                 Formatos suportados: arquivos <strong>.CSV</strong> genéricos ou arquivos <strong>.QIF</strong> exportados do KMyMoney, Quicken ou Microsoft Money.
               </p>
             </div>
@@ -385,7 +385,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
           {/* Danger Zone: Clean Database Card */}
           <div className="bg-rose-50/50 dark:bg-rose-950/10 border border-rose-150 dark:border-rose-950/30 rounded-3xl p-6 shadow-sm space-y-3">
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-full bg-rose-100 dark:bg-rose-950 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0" aria-hidden="true">
+              <div className="w-9 h-9 rounded-full bg-rose-100 dark:bg-rose-950 flex items-center justify-center text-rose-700 dark:text-rose-400 shrink-0" aria-hidden="true">
                 <AlertCircle className="w-5 h-5" />
               </div>
               <div>
@@ -404,7 +404,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
                     id="keepRecurringInClear"
                     checked={keepRecurringInClear}
                     onChange={(e) => setKeepRecurringInClear(e.target.checked)}
-                    className="w-4 h-4 text-emerald-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer"
+                    className="w-4 h-4 text-emerald-700 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer dark:text-emerald-400"
                   />
                   <label htmlFor="keepRecurringInClear" className="text-xs font-bold text-gray-700 dark:text-gray-300 cursor-pointer">
                     Preservar Lançamentos Agendados (Agenda Recorrente)
@@ -414,13 +414,13 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
             </div>
 
             {clearSuccess && (
-              <div role="status" aria-live="polite" className="mt-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900 rounded-xl p-3">
+              <div role="status" aria-live="polite" className="mt-2 text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900 rounded-xl p-3">
                 {clearSuccess}
               </div>
             )}
 
             {clearError && (
-              <div role="alert" aria-live="polite" className="mt-2 text-xs text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 rounded-xl p-3">
+              <div role="alert" aria-live="polite" className="mt-2 text-xs text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 rounded-xl p-3">
                 {clearError}
               </div>
             )}
@@ -475,10 +475,10 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
           {/* File Info Title */}
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
-              <FileText className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              <FileText className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
               <div>
                 <p className="font-bold text-sm text-gray-900 dark:text-white">{fileName}</p>
-                <span className="text-[10px] font-mono bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2.5 py-0.5 rounded-md border border-gray-200/50">
+                <span className="text-xs font-mono bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2.5 py-0.5 rounded-md border border-gray-200/50">
                   FORMATO: {detectedFormat?.toUpperCase()}
                 </span>
               </div>
@@ -486,7 +486,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
             <button
               onClick={resetState}
-              className="text-xs text-rose-600 dark:text-rose-400 font-semibold hover:underline"
+              className="text-xs text-rose-700 dark:text-rose-400 font-semibold hover:underline"
             >
               Trocar arquivo
             </button>
@@ -496,7 +496,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
           {detectedFormat === 'csv' && csvHeaders.length > 0 && (
             <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 shadow-sm space-y-4">
               <div className="border-b border-gray-100 dark:border-gray-800 pb-3 flex items-center gap-2">
-                <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
+                <FileSpreadsheet className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
                 <h3 className="font-bold text-sm text-gray-800 dark:text-white">
                   Mapeamento de Colunas do CSV (Ajuste se necessário)
                 </h3>
@@ -505,7 +505,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Date */}
                 <div>
-                  <label htmlFor="mapping-date" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-date" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Data *
                   </label>
                   <select
@@ -522,7 +522,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Payee */}
                 <div>
-                  <label htmlFor="mapping-payee" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-payee" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Beneficiário *
                   </label>
                   <select
@@ -539,7 +539,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Amount */}
                 <div>
-                  <label htmlFor="mapping-amount" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-amount" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Valor (R$) *
                   </label>
                   <select
@@ -556,7 +556,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Type */}
                 <div>
-                  <label htmlFor="mapping-type" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-type" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Tipo (Débito/Crédito)
                   </label>
                   <select
@@ -574,7 +574,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Memo */}
                 <div>
-                  <label htmlFor="mapping-memo" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-memo" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Observações (Memo)
                   </label>
                   <select
@@ -592,7 +592,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Category */}
                 <div>
-                  <label htmlFor="mapping-category" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-category" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Categoria
                   </label>
                   <select
@@ -610,7 +610,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Is Recurring */}
                 <div>
-                  <label htmlFor="mapping-recurring" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-recurring" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Recorrente (Sim/Não)
                   </label>
                   <select
@@ -628,7 +628,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Recurrence Interval */}
                 <div>
-                  <label htmlFor="mapping-recurrence-interval" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-recurrence-interval" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Intervalo (Frequência)
                   </label>
                   <select
@@ -646,7 +646,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Remaining Occurrences */}
                 <div>
-                  <label htmlFor="mapping-remaining-occurrences" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-remaining-occurrences" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Parcelas Restantes
                   </label>
                   <select
@@ -664,7 +664,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
 
                 {/* Next Due Date */}
                 <div>
-                  <label htmlFor="mapping-next-due-date" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                  <label htmlFor="mapping-next-due-date" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     Coluna de Próximo Vencimento
                   </label>
                   <select
@@ -690,7 +690,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
             </h3>
 
             {parsedTransactions.length === 0 ? (
-              <div className="p-8 text-center text-xs text-gray-400 dark:text-gray-500">
+              <div className="p-8 text-center text-xs text-gray-500 dark:text-gray-500">
                 Nenhuma transação válida pôde ser lida com as configurações atuais.
               </div>
             ) : (
@@ -699,25 +699,25 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
                   <div key={idx} className="p-3 bg-white dark:bg-gray-900 hover:bg-gray-50/50 dark:hover:bg-gray-800/10 flex items-center justify-between text-xs font-semibold">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-gray-400">{formatDate(t.date)}</span>
+                        <span className="font-mono text-gray-500">{formatDate(t.date)}</span>
                         <span className="text-gray-900 dark:text-white truncate max-w-[200px]">{t.payee}</span>
                         {t.isRecurring && (
-                          <span className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-1">
+                          <span className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-1.5 py-0.5 rounded-md flex items-center gap-1">
                             Agendado ({t.recurrenceInterval === 'diario' ? 'Diário' : t.recurrenceInterval === 'semanal' ? 'Semanal' : t.recurrenceInterval === 'quinzenal' ? 'Quinzenal' : t.recurrenceInterval === 'mensal' ? 'Mensal' : t.recurrenceInterval === 'anual' ? 'Anual' : t.recurrenceInterval || 'Recorrente'}{t.remainingOccurrences ? ` - ${t.remainingOccurrences} parcelas` : ''})
                           </span>
                         )}
                       </div>
-                      <div className="text-[10px] text-gray-400 flex flex-col gap-0.5 mt-0.5">
+                      <div className="text-xs text-gray-500 flex flex-col gap-0.5 mt-0.5">
                         {t.splits && t.splits.length > 0 ? (
                           <div className="flex flex-col gap-1 mt-1">
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-[10px]">
+                            <span className="font-bold text-emerald-700 dark:text-emerald-400 text-xs">
                               Múltiplas Categorias ({t.splits.length} splits):
                             </span>
                             <div className="pl-2 border-l-2 border-emerald-500/20 dark:border-emerald-500/40 flex flex-col gap-1">
                               {t.splits.map((s: any, sidx: number) => (
-                                <span key={sidx} className="text-[9px] text-gray-500 dark:text-gray-450">
+                                <span key={sidx} className="text-xs text-gray-500 dark:text-gray-450">
                                   {s.categoryName}{s.subcategoryName ? ` → ${s.subcategoryName}` : ''}: <strong className="font-mono text-gray-700 dark:text-gray-300">{formatCurrency(s.amount)}</strong>
-                                  {s.memo && <span className="text-gray-400 font-normal"> ({s.memo})</span>}
+                                  {s.memo && <span className="text-gray-500 font-normal"> ({s.memo})</span>}
                                 </span>
                               ))}
                             </div>
@@ -735,13 +735,13 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
                         )}
                       </div>
                     </div>
-                    <span className={`font-mono font-bold text-xs ${t.type === 'credito' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    <span className={`font-mono font-bold text-xs ${t.type === 'credito' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
                       {t.type === 'credito' ? '+' : '-'}{formatCurrency(t.amount)}
                     </span>
                   </div>
                 ))}
                 {parsedTransactions.length > 50 && (
-                  <div className="p-3 text-center text-[10px] text-gray-400 bg-gray-50 dark:bg-gray-950/20">
+                  <div className="p-3 text-center text-xs text-gray-500 bg-gray-50 dark:bg-gray-950/20">
                     ...e mais {parsedTransactions.length - 50} transações.
                   </div>
                 )}
@@ -775,7 +775,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
               )}
               {importError && (
                 <div role="alert" aria-live="assertive" className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 p-4 rounded-2xl flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  <AlertCircle className="w-5 h-5 text-red-700 dark:text-red-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
                   <div>
                     <h4 className="font-bold text-sm text-red-800 dark:text-red-300">Falha ao Importar</h4>
                     <p className="text-xs text-red-700/90 dark:text-red-400/90 mt-1">
@@ -791,7 +791,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="space-y-1">
-                <label htmlFor="import-confirm-account" className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <label htmlFor="import-confirm-account" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Confirmar destino
                 </label>
                 <select
@@ -813,13 +813,13 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
                   id="overwrite-dup"
                   checked={overwriteDuplicates}
                   onChange={(e) => setOverwriteDuplicates(e.target.checked)}
-                  className="w-4 h-4 text-emerald-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer"
+                  className="w-4 h-4 text-emerald-700 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer dark:text-emerald-400"
                 />
                 <label htmlFor="overwrite-dup" className="text-left cursor-pointer">
                   <span className="block text-xs font-bold text-gray-700 dark:text-gray-300">
                     Atualizar transações existentes
                   </span>
-                  <span className="block text-[9px] text-gray-500 dark:text-gray-400">
+                  <span className="block text-xs text-gray-500 dark:text-gray-400">
                     Substitui duplicados para recuperar splits e categorias corretas
                   </span>
                 </label>
@@ -838,7 +838,7 @@ export const ImportWizard: React.FC<ImportWizardProps> = ({
                 type="button"
                 onClick={handleConfirmImport}
                 disabled={!selectedAccountId || parsedTransactions.length === 0 || loading}
-                className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-6 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                className="bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-400 text-white px-6 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
                 {loading ? (
                   <>

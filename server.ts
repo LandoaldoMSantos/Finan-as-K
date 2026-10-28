@@ -2,6 +2,8 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import JSZip from 'jszip';
+import compression from 'compression';
+import helmet from 'helmet';
 import { createServer as createViteServer } from 'vite';
 import { db } from './src/db/index.ts';
 import { users, accounts, categories, transactions, tags, transactionTags, payees, transactionSplits } from './src/db/schema.ts';
@@ -13,9 +15,49 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Set up standard express body parsers
-  app.use(express.json({ limit: '100mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '100mb' }));
+  app.disable('x-powered-by');
+
+  // Security headers. CSP stays off because Vite dev, Firebase Auth popups and Google APIs
+  // need inline scripts and several origins; the popup-friendly COOP keeps Google sign-in working.
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+    crossOriginEmbedderPolicy: false,
+  }));
+
+  // gzip/brotli-negotiated compression for JSON and static assets
+  app.use(compression());
+
+  // Large bodies are only accepted where files/backups are uploaded; everything else stays small
+  const largeBodyRoutes = ['/api/import', '/api/backup/restore'];
+  app.use(largeBodyRoutes, express.json({ limit: '100mb' }));
+  app.use(express.json({ limit: '2mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+
+  // Indexes for the queries every screen runs (safe, idempotent)
+  try {
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS transactions_user_recurring_date_idx ON transactions (user_id, is_recurring, date DESC, id DESC)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS transactions_account_date_idx ON transactions (account_id, date, id)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS transactions_category_idx ON transactions (category_id)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS transaction_tags_tx_idx ON transaction_tags (transaction_id)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS transaction_splits_tx_idx ON transaction_splits (transaction_id)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS accounts_user_idx ON accounts (user_id)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS categories_user_idx ON categories (user_id)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS tags_user_idx ON tags (user_id)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS payees_user_idx ON payees (user_id)`);
+    console.log('Schema check: indexes ensured.');
+  } catch (e) {
+    console.warn('Index creation skipped or failed:', e);
+  }
+
+  // Trigram indexes make the "contains" search on payee/memo use an index (needs pg_trgm)
+  try {
+    await db.execute(sql`CREATE EXTENSION IF NOT EXISTS pg_trgm`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS transactions_payee_trgm_idx ON transactions USING gin (lower(payee) gin_trgm_ops)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS transactions_memo_trgm_idx ON transactions USING gin (lower(coalesce(memo, '')) gin_trgm_ops)`);
+  } catch (e) {
+    console.warn('pg_trgm search indexes skipped (extension not available):', e);
+  }
 
   // Ensure new schema columns exist (safe, idempotent)
   try {
@@ -105,37 +147,30 @@ async function startServer() {
       // Load accounts
       const userAccounts = await db.select().from(accounts).where(eq(accounts.userId, userId));
       
-      // Load transactions to calculate actual balances (only select minimal needed columns)
-      const userTx = await db.select({
+      // Aggregate balances in SQL instead of loading every transaction into memory.
+      // Scheduled items ([Agendado]) are excluded, as before.
+      const todayStr = new Date().toISOString().split('T')[0];
+      const sums = await db.select({
         accountId: transactions.accountId,
-        type: transactions.type,
-        amount: transactions.amount,
-        date: transactions.date,
-        memo: transactions.memo,
+        total: sql<number>`cast(coalesce(sum(case when ${transactions.type} = 'credito' then ${transactions.amount} else -${transactions.amount} end), 0) as bigint)`,
+        untilToday: sql<number>`cast(coalesce(sum(case when ${transactions.date} <= ${todayStr} then (case when ${transactions.type} = 'credito' then ${transactions.amount} else -${transactions.amount} end) else 0 end), 0) as bigint)`,
       })
       .from(transactions)
       .where(and(
         eq(transactions.userId, userId),
-        eq(transactions.isRecurring, false)
-      ));
+        eq(transactions.isRecurring, false),
+        sql`(${transactions.memo} IS NULL OR ${transactions.memo} NOT LIKE '%[Agendado]%')`
+      ))
+      .groupBy(transactions.accountId);
 
-      const todayStr = new Date().toISOString().split('T')[0];
+      const sumsByAccount = new Map(sums.map((r) => [r.accountId, r]));
 
       const accountsWithBalances = userAccounts.map(acc => {
-        // Balance = initialBalance + credits - debits (excluding scheduled [Agendado] items)
-        const accTx = userTx.filter(t => t.accountId === acc.id && !(t.memo && t.memo.includes('[Agendado]')));
-        const credits = accTx.filter(t => t.type === 'credito').reduce((sum, t) => sum + t.amount, 0);
-        const debits = accTx.filter(t => t.type === 'debito').reduce((sum, t) => sum + t.amount, 0);
-
-        // Balance up to today
-        const todayTx = accTx.filter(t => t.date <= todayStr);
-        const todayCredits = todayTx.filter(t => t.type === 'credito').reduce((sum, t) => sum + t.amount, 0);
-        const todayDebits = todayTx.filter(t => t.type === 'debito').reduce((sum, t) => sum + t.amount, 0);
-        
+        const agg = sumsByAccount.get(acc.id);
         return {
           ...acc,
-          currentBalance: acc.initialBalance + credits - debits,
-          todayBalance: acc.initialBalance + todayCredits - todayDebits,
+          currentBalance: acc.initialBalance + Number(agg?.total ?? 0),
+          todayBalance: acc.initialBalance + Number(agg?.untilToday ?? 0),
         };
       });
 
@@ -702,20 +737,16 @@ async function startServer() {
         offset = (page - 1) * limit;
 
         // Total count and totals matching the filters
-        const [countRes] = await db
-          .select({ count: sql<number>`cast(count(*) as int)` })
-          .from(transactions)
-          .where(and(...conditions));
-        total = countRes?.count || 0;
-
         const [totalsRes] = await db
           .select({
+            count: sql<number>`cast(count(*) as int)`,
             creditSum: sql<number>`cast(coalesce(sum(case when ${transactions.type} = 'credito' then ${transactions.amount} else 0 end), 0) as int)`,
             debitSum: sql<number>`cast(coalesce(sum(case when ${transactions.type} = 'debito' then ${transactions.amount} else 0 end), 0) as int)`,
           })
           .from(transactions)
           .where(and(...conditions));
 
+        total = totalsRes?.count || 0;
         totalCredit = totalsRes?.creditSum || 0;
         totalDebit = totalsRes?.debitSum || 0;
       }
@@ -760,6 +791,8 @@ async function startServer() {
       // Compute exact running balances chronologically per account
       const balanceMap = new Map<number, number>();
       if (txIds.length > 0 && req.query.isRecurring !== 'true') {
+        // The window is partitioned by account, so only the accounts present on this page matter
+        const pageAccountIds = [...new Set(results.map(r => r.transaction.accountId))];
         try {
           const balanceQuery = sql`
             WITH tx_balance AS (
@@ -772,6 +805,7 @@ async function startServer() {
               FROM ${transactions} t
               JOIN ${accounts} a ON t.account_id = a.id
               WHERE t.user_id = ${userId} 
+                AND t.account_id IN (${sql.join(pageAccountIds.map(id => sql`${id}`), sql`, `)})
                 AND t.is_recurring = false 
                 AND (t.memo IS NULL OR t.memo NOT LIKE '%[Agendado]%')
             )
@@ -788,18 +822,23 @@ async function startServer() {
         }
       }
 
+      // Group tags and splits by transaction once (O(n) instead of filtering per row)
+      const tagsByTx = new Map<number, (typeof allTxTags)[number]['tag'][]>();
+      for (const t of allTxTags) {
+        const list = tagsByTx.get(t.txId);
+        if (list) list.push(t.tag); else tagsByTx.set(t.txId, [t.tag]);
+      }
+      const splitsByTx = new Map<number, any[]>();
+      for (const s of allTxSplits) {
+        const item = { ...s.split, category: s.category };
+        const list = splitsByTx.get(s.split.transactionId);
+        if (list) list.push(item); else splitsByTx.set(s.split.transactionId, [item]);
+      }
+
       // Construct return objects
       const formatted = results.map(r => {
-        const itemTags = allTxTags
-          .filter(t => t.txId === r.transaction.id)
-          .map(t => t.tag);
-
-        const itemSplits = allTxSplits
-          .filter(s => s.split.transactionId === r.transaction.id)
-          .map(s => ({
-            ...s.split,
-            category: s.category,
-          }));
+        const itemTags = tagsByTx.get(r.transaction.id) ?? [];
+        const itemSplits = splitsByTx.get(r.transaction.id) ?? [];
 
         return {
           ...r.transaction,
@@ -837,6 +876,25 @@ async function startServer() {
       res.status(500).json({ error: error.message });
     }
   });
+
+  // Helpers shared by create/update: build rows for batched inserts
+  function buildSplitRows(transactionId: number, splits: any[]) {
+    return splits.map((s) => ({
+      transactionId,
+      categoryId: s.categoryId ? parseInt(s.categoryId) : null,
+      amount: Math.round(parseFloat(s.amount)),
+      memo: s.memo || null,
+    }));
+  }
+
+  async function buildTagRows(executor: Pick<typeof db, 'select'>, userId: number, transactionId: number, tagIds: unknown) {
+    if (!Array.isArray(tagIds) || tagIds.length === 0) return [];
+    const parsed = [...new Set(tagIds.map((t) => parseInt(String(t))).filter((t) => !isNaN(t)))];
+    if (parsed.length === 0) return [];
+    const owned = await executor.select({ id: tags.id }).from(tags)
+      .where(and(eq(tags.userId, userId), inArray(tags.id, parsed)));
+    return owned.map((t) => ({ transactionId, tagId: t.id }));
+  }
 
   app.post('/api/transactions', requireAuth, async (req: AuthRequest, res) => {
     try {
@@ -876,8 +934,9 @@ async function startServer() {
       const targetTxDate = isRecurring ? (nextDueDate || date) : date;
       const targetNextDueDate = isRecurring ? (nextDueDate || date) : null;
 
-      // Insert transaction
-      const result = await db.insert(transactions).values({
+      // Insert transaction, splits and tags atomically (all or nothing)
+      const newTx = await db.transaction(async (trx) => {
+      const result = await trx.insert(transactions).values({
         userId,
         accountId: parseInt(accountId),
         date: targetTxDate,
@@ -892,32 +951,21 @@ async function startServer() {
         nextDueDate: targetNextDueDate,
       }).returning();
 
-      const newTx = result[0];
+      const created = result[0];
 
-      // Handle splits
+      // Handle splits (single batched insert)
       if (hasSplits) {
-        for (const s of splits) {
-          await db.insert(transactionSplits).values({
-            transactionId: newTx.id,
-            categoryId: s.categoryId ? parseInt(s.categoryId) : null,
-            amount: Math.round(parseFloat(s.amount)),
-            memo: s.memo || null,
-          });
-        }
+        await trx.insert(transactionSplits).values(buildSplitRows(created.id, splits));
       }
 
-      // Handle tags mapping
-      if (Array.isArray(tagIds) && tagIds.length > 0) {
-        for (const tagId of tagIds) {
-          const parsedTagId = parseInt(tagId);
-          if (!isNaN(parsedTagId)) {
-            await db.insert(transactionTags).values({
-              transactionId: newTx.id,
-              tagId: parsedTagId,
-            }).onConflictDoNothing();
-          }
-        }
+      // Handle tags mapping (single batched insert, only tags owned by this user)
+      const tagRows = await buildTagRows(trx, userId, created.id, tagIds);
+      if (tagRows.length > 0) {
+        await trx.insert(transactionTags).values(tagRows).onConflictDoNothing();
       }
+
+      return created;
+      });
 
       res.status(201).json(newTx);
     } catch (error: any) {
@@ -966,6 +1014,14 @@ async function startServer() {
         }
       }
 
+      if (accountId) {
+        const targetAcc = await db.select({ id: accounts.id }).from(accounts)
+          .where(and(eq(accounts.id, parseInt(accountId)), eq(accounts.userId, userId))).limit(1);
+        if (targetAcc.length === 0) {
+          return res.status(400).json({ error: 'Selected account does not exist or access is denied' });
+        }
+      }
+
       const hasSplits = Array.isArray(splits) && splits.length > 0;
 
       // Calculate synchronized date and nextDueDate for recurring vs non-recurring
@@ -979,8 +1035,9 @@ async function startServer() {
         effectiveNextDueDate = targetDate;
       }
 
-      // Update basic fields
-      const result = await db.update(transactions)
+      // Update fields, splits and tags atomically (all or nothing)
+      const updated = await db.transaction(async (trx) => {
+      const result = await trx.update(transactions)
         .set({
           accountId: accountId ? parseInt(accountId) : existing[0].accountId,
           date: effectiveDate,
@@ -998,35 +1055,22 @@ async function startServer() {
         .returning();
 
       // Clear existing splits and insert updated ones
-      await db.delete(transactionSplits).where(eq(transactionSplits.transactionId, id));
-
+      await trx.delete(transactionSplits).where(eq(transactionSplits.transactionId, id));
       if (hasSplits) {
-        for (const s of splits) {
-          await db.insert(transactionSplits).values({
-            transactionId: id,
-            categoryId: s.categoryId ? parseInt(s.categoryId) : null,
-            amount: Math.round(parseFloat(s.amount)),
-            memo: s.memo || null,
-          });
-        }
+        await trx.insert(transactionSplits).values(buildSplitRows(id, splits));
       }
 
       // Clear existing tags and insert updated ones
-      await db.delete(transactionTags).where(eq(transactionTags.transactionId, id));
-
-      if (Array.isArray(tagIds) && tagIds.length > 0) {
-        for (const tagId of tagIds) {
-          const parsedTagId = parseInt(tagId);
-          if (!isNaN(parsedTagId)) {
-            await db.insert(transactionTags).values({
-              transactionId: id,
-              tagId: parsedTagId,
-            }).onConflictDoNothing();
-          }
-        }
+      await trx.delete(transactionTags).where(eq(transactionTags.transactionId, id));
+      const tagRows = await buildTagRows(trx, userId, id, tagIds);
+      if (tagRows.length > 0) {
+        await trx.insert(transactionTags).values(tagRows).onConflictDoNothing();
       }
 
-      res.json(result[0]);
+      return result[0];
+      });
+
+      res.json(updated);
     } catch (error: any) {
       console.error('Error in PUT /api/transactions:', error);
       res.status(500).json({ error: error.message });
@@ -1266,14 +1310,27 @@ async function startServer() {
         eq(transactions.isRecurring, false)
       ));
 
+      // Index existing transactions by (date, payee, amount, type) for O(1) duplicate lookups
+      const dupKey = (date: string, payee: string, amount: number, type: string) =>
+        `${date}|${(payee || '').trim().toLowerCase()}|${amount}|${type}`;
+      const existingByKey = new Map<string, typeof existingTx>();
+      for (const e of existingTx) {
+        const key = dupKey(e.date, e.payee, e.amount, e.type);
+        const list = existingByKey.get(key);
+        if (list) list.push(e); else existingByKey.set(key, [e]);
+      }
+
       let importedCount = 0;
       let duplicateCount = 0;
+
+      // The whole import runs in one SQL transaction: a failure halfway leaves no partial data
+      await db.transaction(async (trx) => {
 
       const getOrCreateCategory = async (catName: string, subName?: string, txType?: string) => {
         if (!catName) return null;
         let catRecord = userCategories.find(c => c.name.toLowerCase() === catName.toLowerCase() && c.parentId === null);
         if (!catRecord) {
-          const newCat = await db.insert(categories).values({
+          const newCat = await trx.insert(categories).values({
             userId,
             name: catName,
             type: txType === 'credito' ? 'receita' : 'despesa',
@@ -1287,7 +1344,7 @@ async function startServer() {
         if (subName) {
           let subRecord = userCategories.find(c => c.name.toLowerCase() === subName.toLowerCase() && c.parentId === catRecord!.id);
           if (!subRecord) {
-            const newSub = await db.insert(categories).values({
+            const newSub = await trx.insert(categories).values({
               userId,
               name: subName,
               type: txType === 'credito' ? 'receita' : 'despesa',
@@ -1303,24 +1360,18 @@ async function startServer() {
 
       for (const t of txs) {
         // Simple duplicate detection: check if there exists an identical transaction
-        const foundIndex = existingTx.findIndex(e => 
-          e.date === t.date && 
-          e.payee.trim().toLowerCase() === t.payee.trim().toLowerCase() && 
-          e.amount === t.amount && 
-          e.type === t.type
-        );
+        const candidates = existingByKey.get(dupKey(t.date, t.payee, t.amount, t.type));
+        const foundDuplicate = candidates?.shift(); // Removed so it doesn't get matched again
 
-        if (foundIndex !== -1) {
-          const foundDuplicate = existingTx[foundIndex];
-          existingTx.splice(foundIndex, 1); // Remove from in-memory array so it doesn't get matched again
+        if (foundDuplicate) {
 
           if (overwriteDuplicates) {
             // Delete the duplicate transaction so we can insert the newly parsed one (with splits/categories)
-            await db.delete(transactions).where(eq(transactions.id, foundDuplicate.id));
+            await trx.delete(transactions).where(eq(transactions.id, foundDuplicate.id));
           } else {
             // Sum the value of the duplicate transaction to the existing transaction
             const newAmount = foundDuplicate.amount + t.amount;
-            await db.update(transactions)
+            await trx.update(transactions)
               .set({ amount: newAmount })
               .where(eq(transactions.id, foundDuplicate.id));
 
@@ -1334,15 +1385,11 @@ async function startServer() {
         if (payeeName) {
           const payeeExists = userPayees.some(p => p.name.toLowerCase() === payeeName.toLowerCase());
           if (!payeeExists) {
-            try {
-              const newPayee = await db.insert(payees).values({
-                userId,
-                name: payeeName,
-              }).returning();
-              userPayees.push(newPayee[0]);
-            } catch (payeeErr) {
-              console.error('Error auto-registering payee during import:', payeeErr);
-            }
+            const newPayee = await trx.insert(payees).values({
+              userId,
+              name: payeeName,
+            }).returning();
+            userPayees.push(newPayee[0]);
           }
         }
 
@@ -1353,7 +1400,7 @@ async function startServer() {
         }
 
         // Insert transaction (this acts as the template if isRecurring is true)
-        const insertedTx = await db.insert(transactions).values({
+        const insertedTx = await trx.insert(transactions).values({
           userId,
           accountId: parseInt(accountId),
           date: t.date,
@@ -1374,7 +1421,7 @@ async function startServer() {
         if (hasSplits) {
           for (const s of t.splits!) {
             const splitCatId = s.categoryName ? await getOrCreateCategory(s.categoryName, s.subcategoryName, t.type) : null;
-            await db.insert(transactionSplits).values({
+            await trx.insert(transactionSplits).values({
               transactionId: txId,
               categoryId: splitCatId,
               amount: s.amount,
@@ -1389,6 +1436,7 @@ async function startServer() {
 
         importedCount++;
       }
+      });
 
       res.json({
         importedCount,
@@ -1415,14 +1463,12 @@ async function startServer() {
         return res.json({ message: 'Histórico de transações limpo com sucesso! Os lançamentos agendados foram preservados.' });
       }
 
-      // 1. Delete all transactions
-      await db.delete(transactions).where(eq(transactions.userId, userId));
-
-      // 2. Delete all tags
-      await db.delete(tags).where(eq(tags.userId, userId));
-
-      // 3. Delete all categories
-      await db.delete(categories).where(eq(categories.userId, userId));
+      // 1-3. Delete all transactions, tags and categories atomically
+      await db.transaction(async (trx) => {
+        await trx.delete(transactions).where(eq(transactions.userId, userId));
+        await trx.delete(tags).where(eq(tags.userId, userId));
+        await trx.delete(categories).where(eq(categories.userId, userId));
+      });
 
       // 4. Re-create default categories
       await ensureDefaultCategories(userId);
@@ -1604,21 +1650,6 @@ async function startServer() {
     return parentId;
   }
 
-  // Helper function to read files recursively
-  function getFilesRecursively(dir: string, fileList: string[] = []): string[] {
-    if (!fs.existsSync(dir)) return fileList;
-    const files = fs.readdirSync(dir);
-    for (const file of files) {
-      const name = path.join(dir, file);
-      if (fs.statSync(name).isDirectory()) {
-        getFilesRecursively(name, fileList);
-      } else {
-        fileList.push(name);
-      }
-    }
-    return fileList;
-  }
-
   // Helper function to generate full backup payload for a user
   async function getUserBackupPayload(dbUserId: number, userEmail: string) {
     const [
@@ -1672,186 +1703,186 @@ async function startServer() {
     const bTxTags: any[] = Array.isArray(payload?.transactionTags) ? payload.transactionTags : [];
     const bTxSplits: any[] = Array.isArray(payload?.transactionSplits) ? payload.transactionSplits : [];
 
-    if (mode === 'replace') {
-      const existingTxs = await db.select({ id: transactions.id }).from(transactions).where(eq(transactions.userId, dbUserId));
-      const txIds = existingTxs.map(t => t.id);
-      if (txIds.length > 0) {
-        await db.delete(transactionTags).where(inArray(transactionTags.transactionId, txIds));
-        await db.delete(transactionSplits).where(inArray(transactionSplits.transactionId, txIds));
-      }
-      await db.delete(transactions).where(eq(transactions.userId, dbUserId));
-      await db.delete(categories).where(eq(categories.userId, dbUserId));
-      await db.delete(accounts).where(eq(accounts.userId, dbUserId));
-      await db.delete(tags).where(eq(tags.userId, dbUserId));
-      await db.delete(payees).where(eq(payees.userId, dbUserId));
-    }
-
-    // 1. Insert accounts and build mapping (oldId -> newId)
-    const accountIdMap = new Map<number, number>();
-    for (const acc of bAccounts) {
-      const [inserted] = await db.insert(accounts).values({
-        userId: dbUserId,
-        name: acc.name,
-        type: acc.type || 'Corrente',
-        initialBalance: Number(acc.initialBalance) || 0,
-      }).returning();
-      if (acc.id != null) {
-        accountIdMap.set(acc.id, inserted.id);
-      }
-    }
-
-    // Safety fallback: if no accounts were in the backup, create a default one
-    if (accountIdMap.size === 0) {
-      const [defaultAcc] = await db.insert(accounts).values({
-        userId: dbUserId,
-        name: 'Conta Principal',
-        type: 'Corrente',
-        initialBalance: 0,
-      }).returning();
-      accountIdMap.set(0, defaultAcc.id);
-    }
-
-    // 2. Insert categories (parents first, then subcategories)
-    const categoryIdMap = new Map<number, number>();
-    const parentCats = bCategories.filter((c: any) => !c.parentId);
-    const childCats = bCategories.filter((c: any) => !!c.parentId);
-
-    for (const cat of parentCats) {
-      const [inserted] = await db.insert(categories).values({
-        userId: dbUserId,
-        name: cat.name,
-        type: cat.type || 'despesa',
-        parentId: null,
-      }).returning();
-      if (cat.id != null) {
-        categoryIdMap.set(cat.id, inserted.id);
-      }
-    }
-
-    for (const cat of childCats) {
-      const newParentId = cat.parentId ? categoryIdMap.get(cat.parentId) ?? null : null;
-      const [inserted] = await db.insert(categories).values({
-        userId: dbUserId,
-        name: cat.name,
-        type: cat.type || 'despesa',
-        parentId: newParentId,
-      }).returning();
-      if (cat.id != null) {
-        categoryIdMap.set(cat.id, inserted.id);
-      }
-    }
-
-    // 3. Insert tags
-    const tagIdMap = new Map<number, number>();
-    for (const tag of bTags) {
-      const [inserted] = await db.insert(tags).values({
-        userId: dbUserId,
-        name: tag.name,
-      }).returning();
-      if (tag.id != null) {
-        tagIdMap.set(tag.id, inserted.id);
-      }
-    }
-
-    // 4. Insert payees in batches
-    const payeeChunkSize = 500;
-    for (let i = 0; i < bPayees.length; i += payeeChunkSize) {
-      const chunk = bPayees.slice(i, i + payeeChunkSize).map(p => ({
-        userId: dbUserId,
-        name: p.name,
-      }));
-      if (chunk.length > 0) {
-        await db.insert(payees).values(chunk);
-      }
-    }
-
-    // 5. Insert transactions in high-performance chunks (500 per batch)
-    const txIdMap = new Map<number, number>();
-    const defaultAccountId = Array.from(accountIdMap.values())[0];
-    const txChunkSize = 500;
-
-    for (let i = 0; i < bTransactions.length; i += txChunkSize) {
-      const chunk = bTransactions.slice(i, i + txChunkSize);
-      const rowsToInsert = chunk.map(tx => {
-        let targetAccId = accountIdMap.get(tx.accountId);
-        if (!targetAccId) {
-          targetAccId = defaultAccountId;
+    // Everything runs in one SQL transaction: in 'replace' mode a failure halfway
+    // must never leave the user with their old data deleted and the new data missing.
+    return db.transaction(async (trx) => {
+      if (mode === 'replace') {
+        const existingTxs = await trx.select({ id: transactions.id }).from(transactions).where(eq(transactions.userId, dbUserId));
+        const txIds = existingTxs.map(t => t.id);
+        if (txIds.length > 0) {
+          await trx.delete(transactionTags).where(inArray(transactionTags.transactionId, txIds));
+          await trx.delete(transactionSplits).where(inArray(transactionSplits.transactionId, txIds));
         }
-        const targetCatId = tx.categoryId ? categoryIdMap.get(tx.categoryId) ?? null : null;
+        await trx.delete(transactions).where(eq(transactions.userId, dbUserId));
+        await trx.delete(categories).where(eq(categories.userId, dbUserId));
+        await trx.delete(accounts).where(eq(accounts.userId, dbUserId));
+        await trx.delete(tags).where(eq(tags.userId, dbUserId));
+        await trx.delete(payees).where(eq(payees.userId, dbUserId));
+      }
 
-        return {
+      // 1. Insert accounts and build mapping (oldId -> newId)
+      const accountIdMap = new Map<number, number>();
+      for (const acc of bAccounts) {
+        const [inserted] = await trx.insert(accounts).values({
           userId: dbUserId,
-          accountId: targetAccId,
-          date: tx.date || new Date().toISOString().split('T')[0],
-          payee: tx.payee || '',
-          amount: Math.abs(Number(tx.amount) || 0),
-          type: tx.type === 'credito' ? 'credito' as const : 'debito' as const,
-          categoryId: targetCatId,
-          memo: tx.memo || null,
-          isRecurring: !!tx.isRecurring,
-          recurrenceInterval: tx.recurrenceInterval || null,
-          remainingOccurrences: tx.remainingOccurrences ?? null,
-          nextDueDate: tx.nextDueDate || null,
-        };
-      });
+          name: acc.name,
+          type: acc.type || 'Corrente',
+          initialBalance: Number(acc.initialBalance) || 0,
+        }).returning();
+        if (acc.id != null) {
+          accountIdMap.set(acc.id, inserted.id);
+        }
+      }
 
-      if (rowsToInsert.length > 0) {
-        const insertedRows = await db.insert(transactions).values(rowsToInsert).returning({ id: transactions.id });
-        for (let j = 0; j < chunk.length; j++) {
-          if (chunk[j].id != null && insertedRows[j]) {
-            txIdMap.set(chunk[j].id, insertedRows[j].id);
+      // Safety fallback: if no accounts were in the backup, create a default one
+      if (accountIdMap.size === 0) {
+        const [defaultAcc] = await trx.insert(accounts).values({
+          userId: dbUserId,
+          name: 'Conta Principal',
+          type: 'Corrente',
+          initialBalance: 0,
+        }).returning();
+        accountIdMap.set(0, defaultAcc.id);
+      }
+
+      // 2. Insert categories (parents first, then subcategories)
+      const categoryIdMap = new Map<number, number>();
+      const parentCats = bCategories.filter((c: any) => !c.parentId);
+      const childCats = bCategories.filter((c: any) => !!c.parentId);
+
+      for (const cat of parentCats) {
+        const [inserted] = await trx.insert(categories).values({
+          userId: dbUserId,
+          name: cat.name,
+          type: cat.type || 'despesa',
+          parentId: null,
+        }).returning();
+        if (cat.id != null) {
+          categoryIdMap.set(cat.id, inserted.id);
+        }
+      }
+
+      for (const cat of childCats) {
+        const newParentId = cat.parentId ? categoryIdMap.get(cat.parentId) ?? null : null;
+        const [inserted] = await trx.insert(categories).values({
+          userId: dbUserId,
+          name: cat.name,
+          type: cat.type || 'despesa',
+          parentId: newParentId,
+        }).returning();
+        if (cat.id != null) {
+          categoryIdMap.set(cat.id, inserted.id);
+        }
+      }
+
+      // 3. Insert tags
+      const tagIdMap = new Map<number, number>();
+      for (const tag of bTags) {
+        const [inserted] = await trx.insert(tags).values({
+          userId: dbUserId,
+          name: tag.name,
+        }).returning();
+        if (tag.id != null) {
+          tagIdMap.set(tag.id, inserted.id);
+        }
+      }
+
+      // 4. Insert payees in batches
+      const payeeChunkSize = 500;
+      for (let i = 0; i < bPayees.length; i += payeeChunkSize) {
+        const chunk = bPayees.slice(i, i + payeeChunkSize).map(p => ({
+          userId: dbUserId,
+          name: p.name,
+        }));
+        if (chunk.length > 0) {
+          await trx.insert(payees).values(chunk);
+        }
+      }
+
+      // 5. Insert transactions in high-performance chunks (500 per batch)
+      const txIdMap = new Map<number, number>();
+      const defaultAccountId = Array.from(accountIdMap.values())[0];
+      const txChunkSize = 500;
+
+      for (let i = 0; i < bTransactions.length; i += txChunkSize) {
+        const chunk = bTransactions.slice(i, i + txChunkSize);
+        const rowsToInsert = chunk.map(tx => {
+          let targetAccId = accountIdMap.get(tx.accountId);
+          if (!targetAccId) {
+            targetAccId = defaultAccountId;
+          }
+          const targetCatId = tx.categoryId ? categoryIdMap.get(tx.categoryId) ?? null : null;
+
+          return {
+            userId: dbUserId,
+            accountId: targetAccId,
+            date: tx.date || new Date().toISOString().split('T')[0],
+            payee: tx.payee || '',
+            amount: Math.abs(Number(tx.amount) || 0),
+            type: tx.type === 'credito' ? 'credito' as const : 'debito' as const,
+            categoryId: targetCatId,
+            memo: tx.memo || null,
+            isRecurring: !!tx.isRecurring,
+            recurrenceInterval: tx.recurrenceInterval || null,
+            remainingOccurrences: tx.remainingOccurrences ?? null,
+            nextDueDate: tx.nextDueDate || null,
+          };
+        });
+
+        if (rowsToInsert.length > 0) {
+          const insertedRows = await trx.insert(transactions).values(rowsToInsert).returning({ id: transactions.id });
+          for (let j = 0; j < chunk.length; j++) {
+            if (chunk[j].id != null && insertedRows[j]) {
+              txIdMap.set(chunk[j].id, insertedRows[j].id);
+            }
           }
         }
       }
-    }
 
-    // 6. Insert transactionTags in batches
-    const validTxTags: { transactionId: number; tagId: number }[] = [];
-    for (const tt of bTxTags) {
-      const newTxId = txIdMap.get(tt.transactionId);
-      const newTagId = tagIdMap.get(tt.tagId);
-      if (newTxId && newTagId) {
-        validTxTags.push({ transactionId: newTxId, tagId: newTagId });
+      // 6. Insert transactionTags in batches
+      const validTxTags: { transactionId: number; tagId: number }[] = [];
+      for (const tt of bTxTags) {
+        const newTxId = txIdMap.get(tt.transactionId);
+        const newTagId = tagIdMap.get(tt.tagId);
+        if (newTxId && newTagId) {
+          validTxTags.push({ transactionId: newTxId, tagId: newTagId });
+        }
       }
-    }
 
-    for (let i = 0; i < validTxTags.length; i += 500) {
-      const chunk = validTxTags.slice(i, i + 500);
-      try {
-        await db.insert(transactionTags).values(chunk).onConflictDoNothing();
-      } catch (ttErr) {
-        console.warn('Warning inserting transactionTags chunk:', ttErr);
+      for (let i = 0; i < validTxTags.length; i += 500) {
+        const chunk = validTxTags.slice(i, i + 500);
+        await trx.insert(transactionTags).values(chunk).onConflictDoNothing();
       }
-    }
 
-    // 7. Insert transactionSplits in batches
-    const validSplits: { transactionId: number; categoryId: number | null; amount: number; memo: string | null }[] = [];
-    for (const split of bTxSplits) {
-      const newTxId = txIdMap.get(split.transactionId);
-      if (newTxId) {
-        const newCatId = split.categoryId ? categoryIdMap.get(split.categoryId) ?? null : null;
-        validSplits.push({
-          transactionId: newTxId,
-          categoryId: newCatId,
-          amount: Number(split.amount) || 0,
-          memo: split.memo || null,
-        });
+      // 7. Insert transactionSplits in batches
+      const validSplits: { transactionId: number; categoryId: number | null; amount: number; memo: string | null }[] = [];
+      for (const split of bTxSplits) {
+        const newTxId = txIdMap.get(split.transactionId);
+        if (newTxId) {
+          const newCatId = split.categoryId ? categoryIdMap.get(split.categoryId) ?? null : null;
+          validSplits.push({
+            transactionId: newTxId,
+            categoryId: newCatId,
+            amount: Number(split.amount) || 0,
+            memo: split.memo || null,
+          });
+        }
       }
-    }
 
-    for (let i = 0; i < validSplits.length; i += 500) {
-      const chunk = validSplits.slice(i, i + 500);
-      await db.insert(transactionSplits).values(chunk);
-    }
+      for (let i = 0; i < validSplits.length; i += 500) {
+        const chunk = validSplits.slice(i, i + 500);
+        await trx.insert(transactionSplits).values(chunk);
+      }
 
-    return {
-      accountsCount: bAccounts.length,
-      categoriesCount: bCategories.length,
-      transactionsCount: bTransactions.length,
-      tagsCount: bTags.length,
-      payeesCount: bPayees.length,
-      splitsCount: bTxSplits.length,
-    };
+      return {
+        accountsCount: bAccounts.length,
+        categoriesCount: bCategories.length,
+        transactionsCount: bTransactions.length,
+        tagsCount: bTags.length,
+        payeesCount: bPayees.length,
+        splitsCount: bTxSplits.length,
+      };
+    });
   }
 
   // GET: Export complete database backup as JSON
@@ -1895,7 +1926,7 @@ async function startServer() {
   // Supports: parentId (to browse into folders), search (to query anywhere), or root listing
   app.get('/api/backup/drive/folders', requireAuth, async (req: AuthRequest, res) => {
     try {
-      const accessToken = (req.query.accessToken as string) || (req.headers['x-google-token'] as string);
+      const accessToken = (req.headers['x-google-token'] as string);
       if (!accessToken) {
         return res.status(400).json({ error: 'Token do Google Drive não fornecido.' });
       }
@@ -1979,7 +2010,7 @@ async function startServer() {
   app.get('/api/backup/drive/list', requireAuth, async (req: AuthRequest, res) => {
     try {
       const dbUserId = req.dbUser!.id;
-      const accessToken = (req.query.accessToken as string) || (req.headers['x-google-token'] as string);
+      const accessToken = (req.headers['x-google-token'] as string);
       if (!accessToken) {
         return res.status(400).json({ error: 'Token do Google Drive não fornecido.' });
       }
@@ -2113,32 +2144,13 @@ async function startServer() {
       // 1. Fetch user data payload using shared helper
       const databaseBackupData = await getUserBackupPayload(dbUserId, req.dbUser!.email);
 
-      // 2. Build ZIP bundle of codebase + database export using jszip
+      // 2. Build ZIP bundle with the database export only (application source code is not user data)
       const zip = new JSZip();
 
       // Add database JSON file
       zip.file('database_backup.json', JSON.stringify(databaseBackupData, null, 2));
 
-      // Add project source files
-      const configFiles = ['package.json', 'server.ts', 'vite.config.ts', 'tsconfig.json', 'index.html', '.env.example', 'metadata.json'];
-      for (const file of configFiles) {
-        const fullPath = path.join(process.cwd(), file);
-        if (fs.existsSync(fullPath)) {
-          zip.file(file, fs.readFileSync(fullPath));
-        }
-      }
-
-      // Recursively add everything in /src
-      const srcPath = path.join(process.cwd(), 'src');
-      if (fs.existsSync(srcPath)) {
-        const allSrcFiles = getFilesRecursively(srcPath);
-        for (const file of allSrcFiles) {
-          const relPath = path.relative(process.cwd(), file);
-          zip.file(relPath, fs.readFileSync(file));
-        }
-      }
-
-      const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
+      const zipBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
 
       // 3. Resolve destination folder on user's Google Drive
       // Prefer explicit folderId from body or saved ID (stable), fall back to name-based getOrCreate
@@ -2238,7 +2250,9 @@ async function startServer() {
       ? __dirname
       : path.join(process.cwd(), 'dist');
     
-    app.use(express.static(distPath));
+    // Hashed build assets never change: cache them for a year. index.html is always revalidated.
+    app.use('/assets', express.static(path.join(distPath, 'assets'), { immutable: true, maxAge: '1y' }));
+    app.use(express.static(distPath, { maxAge: 0 }));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });

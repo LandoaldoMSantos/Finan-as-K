@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <script>
@@ -32,11 +32,26 @@
         }
       })();
     </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
+    <script>
+      // Apply the saved theme before first paint to avoid a light flash in dark mode.
+      // 'light' | 'dark' | 'system' (default: follow the operating system)
+      (function () {
+        try {
+          var pref = localStorage.getItem('theme') || 'system';
+          var dark = pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
     <meta name="description" content="Aplicativo completo de finanças pessoais com suporte a contas correntes, categorização hierárquica, etiquetas, transações recorrentes e importador inteligente de QIF e CSV." />
-    <title>Finanças Pessoais - Gestão Financeira Completa</title>
+    <title>Finanças K · Gestão Financeira Pessoal</title>
   </head>
   <body>
+    <noscript>O Finanças K precisa de JavaScript ativado para funcionar.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -514,10 +514,10 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <CalendarClock className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <CalendarClock className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
             Agenda de Transações Recorrentes
-          </h2>
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Gerencie despesas e receitas programadas (aluguel, salários, convênios). Dê baixa para registrar o pagamento real.
           </p>
@@ -526,7 +526,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
         {accounts.length > 0 && !showForm && (
           <button
             onClick={openNewForm}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 self-start sm:self-auto"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 self-start sm:self-auto"
           >
             <Plus className="w-4 h-4" />
             Agendar Compromisso
@@ -540,7 +540,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
           <form onSubmit={handleSubmit} className="relative bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-5 my-8">
             <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3">
               <h3 id="recurring-form-title" className="font-bold text-gray-900 dark:text-white flex items-center gap-2 text-base">
-                <CalendarClock className="w-5 h-5 text-emerald-600" />
+                <CalendarClock className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
                 {isDuplicating 
                   ? 'Duplicar Agendamento Recorrente' 
                   : editingId !== null 
@@ -551,7 +551,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                 type="button"
                 onClick={resetForm}
                 aria-label="Fechar formulário de agendamento"
-                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -560,7 +560,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Account Selector */}
             <div>
-              <label htmlFor="recurring-account-id" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label htmlFor="recurring-account-id" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Conta Corrente *
               </label>
               <select
@@ -579,7 +579,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
             {/* Next Due Date Picker */}
             <div>
-              <label htmlFor="recurring-next-due-date" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label htmlFor="recurring-next-due-date" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Próximo Vencimento *
               </label>
               <input
@@ -594,7 +594,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
             {/* Type selector (Debit / Credit) */}
             <div>
-              <span className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Tipo do Lançamento *
               </span>
               <div className="grid grid-cols-2 gap-2" role="group" aria-label="Tipo de lançamento recorrente">
@@ -604,7 +604,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                   aria-pressed={type === 'debito'}
                   className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border focus-visible:ring-2 focus-visible:ring-rose-500 ${
                     type === 'debito'
-                      ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 font-extrabold'
+                      ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-400 font-extrabold'
                       : 'bg-gray-50 dark:bg-gray-800/40 border-gray-150 dark:border-gray-800 text-gray-500 hover:text-gray-700 dark:text-gray-400'
                   }`}
                 >
@@ -616,7 +616,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                   aria-pressed={type === 'credito'}
                   className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                     type === 'credito'
-                      ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900 text-emerald-600 dark:text-emerald-400 font-extrabold'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 font-extrabold'
                       : 'bg-gray-50 dark:bg-gray-800/40 border-gray-150 dark:border-gray-800 text-gray-500 hover:text-gray-700 dark:text-gray-400'
                   }`}
                 >
@@ -627,7 +627,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
             {/* Payee / Origin */}
             <div>
-              <label htmlFor={isCustomPayee ? "recurring-payee-input" : "recurring-payee-select"} className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label htmlFor={isCustomPayee ? "recurring-payee-input" : "recurring-payee-select"} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Beneficiário / Origem *
               </label>
               {!isCustomPayee ? (
@@ -655,7 +655,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                     {sortedPayees.map(p => (
                       <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
-                    <option value="custom" className="font-semibold text-emerald-600 dark:text-emerald-400">+ Novo Beneficiário (escrever)...</option>
+                    <option value="custom" className="font-semibold text-emerald-700 dark:text-emerald-400">+ Novo Beneficiário (escrever)...</option>
                   </select>
                   <button
                     type="button"
@@ -664,7 +664,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                       setSelectedPayeeId('custom');
                       setPayee('');
                     }}
-                    className="px-3.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 rounded-xl border border-emerald-200 dark:border-emerald-900/50 text-xs font-semibold shrink-0 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                    className="px-3.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 rounded-xl border border-emerald-200 dark:border-emerald-900/50 text-xs font-semibold shrink-0 focus-visible:ring-2 focus-visible:ring-emerald-500"
                     title="Escrever novo"
                     aria-label="Escrever novo beneficiário manualmente"
                   >
@@ -701,7 +701,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
             {/* Amount */}
             <div>
-              <label htmlFor="recurring-amount-input" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label htmlFor="recurring-amount-input" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Valor (R$) *
               </label>
               <input
@@ -717,7 +717,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
             {/* Recurrence Interval */}
             <div>
-              <label htmlFor="recurring-interval-select" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label htmlFor="recurring-interval-select" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Frequência de Recorrência *
               </label>
               <select
@@ -738,7 +738,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
             {/* Category selection */}
             <div className="md:col-span-3">
               <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor={!isSplit ? "recurring-category-select" : undefined} className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider">
+                <label htmlFor={!isSplit ? "recurring-category-select" : undefined} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Categoria de Conta
                 </label>
                 <label htmlFor="recurring-split-toggle" className="flex items-center gap-2 cursor-pointer select-none">
@@ -747,9 +747,9 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                     type="checkbox"
                     checked={isSplit}
                     onChange={(e) => toggleSplit(e.target.checked)}
-                    className="w-3.5 h-3.5 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer"
+                    className="w-3.5 h-3.5 text-emerald-700 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer dark:text-emerald-400"
                   />
-                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
                     Dividir em Múltiplas Categorias (Split)
                   </span>
                 </label>
@@ -774,7 +774,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                 </div>
               ) : (
                 <div className="space-y-3 bg-gray-50/50 dark:bg-gray-950/20 p-4 rounded-2xl border border-gray-150 dark:border-gray-850 animate-fade-in">
-                  <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                  <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                     Divisão de Categorias (Splits)
                   </span>
                   
@@ -782,7 +782,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                     <div key={sidx} className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end bg-white dark:bg-gray-900 border border-gray-150 dark:border-gray-850 p-3 rounded-xl shadow-sm relative">
                       {/* Split Category */}
                       <div>
-                        <label htmlFor={`form-split-cat-${sidx}`} className="block text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1">
+                        <label htmlFor={`form-split-cat-${sidx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                           Categoria {sidx + 1}
                         </label>
                         <select
@@ -807,7 +807,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
                       {/* Split Amount */}
                       <div>
-                        <label htmlFor={`form-split-amount-${sidx}`} className="block text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1">
+                        <label htmlFor={`form-split-amount-${sidx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                           Valor (R$)
                         </label>
                         <input
@@ -827,7 +827,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                       {/* Split Memo / Description */}
                       <div className="flex gap-2">
                         <div className="flex-1">
-                          <label htmlFor={`form-split-memo-${sidx}`} className="block text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1">
+                          <label htmlFor={`form-split-memo-${sidx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                             Descrição / Memo
                           </label>
                           <input
@@ -849,7 +849,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                             onClick={() => {
                               setFormSplits(formSplits.filter((_, i) => i !== sidx));
                             }}
-                            className="text-rose-500 hover:text-rose-600 p-1 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 rounded-lg self-end h-[30px] w-[30px] flex items-center justify-center cursor-pointer mb-0.5 focus-visible:ring-2 focus-visible:ring-rose-500"
+                            className="text-rose-700 hover:text-rose-600 p-2 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 rounded-lg self-end h-[30px] w-[30px] flex items-center justify-center cursor-pointer mb-0.5 focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-rose-400"
                             title="Remover Categoria"
                             aria-label={`Remover divisão de categoria ${sidx + 1}`}
                           >
@@ -866,14 +866,14 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                       onClick={() => {
                         setFormSplits([...formSplits, { categoryId: '', amountInput: '', memo: '' }]);
                       }}
-                      className="bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
+                      className="bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
                       aria-label="Adicionar outra divisão de categoria"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       Adicionar Categoria
                     </button>
 
-                    <div className="text-[11px] font-mono font-bold text-gray-500 dark:text-gray-400 flex items-center gap-3">
+                    <div className="text-xs font-mono font-bold text-gray-500 dark:text-gray-400 flex items-center gap-3">
                       <span>Total: R$ {amountInput || '0,00'}</span>
                       <span>Dividido: R$ {
                         (formSplits.reduce((acc, s) => acc + parseAmountToCents(s.amountInput), 0) / 100).toFixed(2).replace('.', ',')
@@ -886,7 +886,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
             {/* Remaining Transactions */}
             <div>
-              <label htmlFor="recurring-remaining-occurrences" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label htmlFor="recurring-remaining-occurrences" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Transações Restantes
               </label>
               <input
@@ -898,19 +898,19 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                 placeholder="Ex: 12 (vazio = Indefinida)"
                 className="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-850 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-mono font-bold"
               />
-              <span className="text-[10px] text-gray-400 dark:text-gray-400 mt-1 block">
+              <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
                 Zerar ou deixar em branco para recorrência sem fim.
               </span>
             </div>
 
             {/* Estimated End Date / Status */}
             <div>
-              <span className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Término da Recorrência
               </span>
               <div className="w-full bg-gray-50 dark:bg-gray-800/50 border border-dashed border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white flex items-center h-[42px]">
                 {estimatedEndDate ? (
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5">
+                  <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1.5">
                     📅 Final: {estimatedEndDate}
                   </span>
                 ) : (
@@ -923,7 +923,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
             {/* Memo */}
             <div className="md:col-span-3">
-              <label htmlFor="recurring-memo-input" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label htmlFor="recurring-memo-input" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 Observações
               </label>
               <input
@@ -940,7 +940,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
           {/* Tags Checkbox Area */}
           {tags.length > 0 && (
             <div className="space-y-2 bg-gray-50/50 dark:bg-gray-950/20 p-4 rounded-xl border border-gray-150 dark:border-gray-850">
-              <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
                 Vincular Etiquetas (Tags)
               </span>
               <div className="flex flex-wrap gap-2">
@@ -953,7 +953,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                       onClick={() => toggleTagSelection(t.id)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all border ${
                         isSelected
-                          ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
+                          ? 'bg-emerald-700 border-emerald-600 text-white shadow-sm'
                           : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300'
                       }`}
                     >
@@ -978,7 +978,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
             <button
               type="submit"
               disabled={formLoading}
-              className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-6 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 font-bold"
+              className="bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-400 text-white px-6 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10 font-bold"
             >
               {formLoading && <RefreshCw className="w-4 h-4 animate-spin" />}
               {isDuplicating 
@@ -1005,7 +1005,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
       ) : (
         <div className="space-y-4">
           <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-250 dark:border-emerald-900 p-4 rounded-2xl flex gap-3 text-xs text-emerald-800 dark:text-emerald-300">
-            <Info className="w-5 h-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <Info className="w-5 h-5 flex-shrink-0 text-emerald-700 dark:text-emerald-400" />
             <p>
               <strong>O que é dar baixa?</strong> Ao clicar em "Confirmar Baixa", o sistema criará uma transação financeira real na data atual do agendamento, descontando ou somando o saldo correspondente, e avançará automaticamente a próxima data de vencimento da regra recorrente.
             </p>
@@ -1030,8 +1030,8 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                     {/* Icon indicator */}
                     <div className={`p-3 rounded-xl ${
                       isRevenue 
-                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400' 
-                        : 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400'
+                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400' 
+                        : 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400'
                     }`}>
                       {isRevenue ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
                     </div>
@@ -1041,10 +1041,10 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                         <h3 className="font-bold text-sm text-gray-900 dark:text-white truncate">
                           {item.payee}
                         </h3>
-                        <span className="text-[10px] bg-gray-100 dark:bg-gray-800 text-gray-500 font-mono px-2 py-0.5 rounded-md border border-gray-150">
+                        <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 font-mono px-2 py-0.5 rounded-md border border-gray-150">
                           CONTA: {item.account?.name}
                         </span>
-                        <span className="text-[10px] bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                        <span className="text-xs bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                           {item.recurrenceInterval === 'diario' ? 'Diário' :
                            item.recurrenceInterval === 'semanal' ? 'Semanal' :
                            item.recurrenceInterval === 'quinzenal' ? 'Quinzenal' :
@@ -1054,20 +1054,20 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                         </span>
                         {item.remainingOccurrences !== null && item.remainingOccurrences !== undefined && item.remainingOccurrences > 0 ? (
                           <>
-                            <span className="text-[10px] bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider flex items-center gap-0.5">
+                            <span className="text-xs bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider flex items-center gap-0.5">
                               Restam: {item.remainingOccurrences} {item.remainingOccurrences === 1 ? 'vez' : 'vezes'}
                             </span>
                             {(() => {
                               const finalDate = calculateEndDate(item.nextDueDate, item.recurrenceInterval, item.remainingOccurrences);
                               return finalDate ? (
-                                <span className="text-[10px] bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                                <span className="text-xs bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                                   Final: {formatDate(finalDate)}
                                 </span>
                               ) : null;
                             })()}
                           </>
                         ) : (
-                          <span className="text-[10px] bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                          <span className="text-xs bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                             ♾️ Indefinida
                           </span>
                         )}
@@ -1075,12 +1075,12 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
                       {item.splits && item.splits.length > 0 ? (
                         <div className="flex flex-col gap-1 mt-1">
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200/55 w-fit">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200/55 w-fit">
                             Múltiplas Categorias ({item.splits.length})
                           </span>
                           <div className="flex flex-wrap gap-x-3 gap-y-1">
                             {item.splits.map((s: any, sidx: number) => (
-                              <div key={sidx} className="text-[10px] text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                              <div key={sidx} className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                 <span>• {s.category?.name || 'Sem nome'}</span>
                                 <span className="font-mono font-semibold">({formatCurrency(s.amount)})</span>
                               </div>
@@ -1088,19 +1088,19 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                           </div>
                         </div>
                       ) : (
-                        <p className="text-[11px] text-gray-400 dark:text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-500">
                           {item.category ? item.category.name : 'Sem Categoria'} {item.memo && `• ${item.memo}`}
                         </p>
                       )}
 
                       <div className="flex items-center gap-1.5 pt-0.5 text-xs">
-                        <Clock className="w-3.5 h-3.5 text-gray-400" />
+                        <Clock className="w-3.5 h-3.5 text-gray-500" />
                         <span className="text-gray-500">Próximo vencimento:</span>
-                        <span className={`font-mono font-bold ${isOverdue ? 'text-rose-600 dark:text-rose-400' : 'text-gray-800 dark:text-gray-200'}`}>
+                        <span className={`font-mono font-bold ${isOverdue ? 'text-rose-700 dark:text-rose-400' : 'text-gray-800 dark:text-gray-200'}`}>
                           {item.nextDueDate ? formatDate(item.nextDueDate) : 'N/A'}
                         </span>
                         {isOverdue && (
-                          <span className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200/50 text-rose-600 dark:text-rose-400 text-[9px] font-bold px-1.5 py-0.5 rounded">
+                          <span className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200/50 text-rose-700 dark:text-rose-400 text-xs font-bold px-1.5 py-0.5 rounded">
                             VENCIDO
                           </span>
                         )}
@@ -1111,10 +1111,10 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                   <div className="flex flex-wrap items-center justify-between md:justify-end gap-4 border-t md:border-t-0 border-gray-100 dark:border-gray-800 pt-3 md:pt-0">
                     {/* Expected Value */}
                     <div className="text-left md:text-right font-mono mr-2">
-                      <span className="block text-[9px] font-sans font-bold text-gray-400 uppercase tracking-wider">
+                      <span className="block text-xs font-sans font-bold text-gray-500 uppercase tracking-wider">
                         Valor Previsto
                       </span>
-                      <span className={`text-base font-bold ${isRevenue ? 'text-emerald-600' : 'text-rose-600'}`}>
+                      <span className={`text-base font-bold ${isRevenue ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
                         {isRevenue ? '+' : '-'}{formatCurrency(item.amount)}
                       </span>
                     </div>
@@ -1123,7 +1123,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => triggerDuplicate(item)}
-                        className="p-2 text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus-visible:ring-2 focus-visible:ring-amber-500"
+                        className="p-2 text-gray-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus-visible:ring-2 focus-visible:ring-amber-500"
                         title="Duplicar Agendamento"
                         aria-label={`Duplicar agendamento de ${item.payee}`}
                       >
@@ -1131,7 +1131,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                       </button>
                       <button
                         onClick={() => handleEditClick(item)}
-                        className="p-2 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        className="p-2 text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus-visible:ring-2 focus-visible:ring-emerald-500"
                         title="Editar Agendamento"
                         aria-label={`Editar agendamento de ${item.payee}`}
                       >
@@ -1139,7 +1139,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                       </button>
                       <button
                         onClick={() => handleDeleteClick(item)}
-                        className="p-2 text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus-visible:ring-2 focus-visible:ring-rose-500"
+                        className="p-2 text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 focus-visible:ring-2 focus-visible:ring-rose-500"
                         title="Excluir Agendamento"
                         aria-label={`Excluir agendamento de ${item.payee}`}
                       >
@@ -1150,7 +1150,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                         onClick={() => handleTriggerPayment(item)}
                         disabled={isLoading}
                         aria-label={`Dar baixa no agendamento de ${item.payee}`}
-                        className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-600/10 ml-2 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        className="bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-400 text-white px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-600/10 ml-2 focus-visible:ring-2 focus-visible:ring-emerald-500"
                       >
                         {isLoading ? (
                           <RefreshCw className="w-3 animate-spin" />
@@ -1174,7 +1174,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
           {deleteTarget && (
             <div className="bg-white dark:bg-gray-900 rounded-3xl max-w-md w-full p-6 border border-gray-150 dark:border-gray-800 shadow-xl space-y-4" role="dialog" aria-modal="true" aria-labelledby="recurring-delete-title">
-              <div className="flex items-center gap-3 text-rose-600">
+              <div className="flex items-center gap-3 text-rose-700 dark:text-rose-400">
                 <div className="p-2 bg-rose-50 dark:bg-rose-950/30 rounded-xl">
                   <Trash2 className="w-6 h-6" />
                 </div>
@@ -1206,19 +1206,19 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
           {triggerTarget && (
             <div className="bg-white dark:bg-gray-900 rounded-3xl max-w-lg w-full p-6 border border-gray-150 dark:border-gray-800 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="recurring-trigger-title">
               <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3">
-                <div className="flex items-center gap-3 text-emerald-600">
+                <div className="flex items-center gap-3 text-emerald-700 dark:text-emerald-400">
                   <div className="p-2 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl">
                     <CheckSquare className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 id="recurring-trigger-title" className="text-base font-bold text-gray-900 dark:text-white font-sans">Dar Baixa no Compromisso</h3>
-                    <p className="text-xs text-gray-400 dark:text-gray-400">"{triggerTarget.payee}"</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">"{triggerTarget.payee}"</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setTriggerTarget(null)}
                   aria-label="Fechar janela de baixa"
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg focus-visible:ring-2 focus-visible:ring-emerald-500"
+                  className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg focus-visible:ring-2 focus-visible:ring-emerald-500"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1232,7 +1232,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                 {/* Date, Value & Account Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label htmlFor="trigger-payment-date" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    <label htmlFor="trigger-payment-date" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                       Data da Transação
                     </label>
                     <input
@@ -1245,7 +1245,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                   </div>
 
                   <div>
-                    <label htmlFor="trigger-payment-amount" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    <label htmlFor="trigger-payment-amount" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                       Valor Real (R$)
                     </label>
                     <input
@@ -1259,7 +1259,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label htmlFor="trigger-payment-account" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    <label htmlFor="trigger-payment-account" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                       Conta de Lançamento
                     </label>
                     <select
@@ -1276,7 +1276,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label htmlFor="trigger-payment-memo" className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    <label htmlFor="trigger-payment-memo" className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                       Memo / Descrição Adicional
                     </label>
                     <input
@@ -1297,7 +1297,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                     type="checkbox"
                     checked={triggerIsLastOccurrence}
                     onChange={(e) => setTriggerIsLastOccurrence(e.target.checked)}
-                    className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-gray-300 dark:border-gray-600 cursor-pointer"
+                    className="w-4 h-4 rounded text-emerald-700 focus:ring-emerald-500 border-gray-300 dark:border-gray-600 cursor-pointer dark:text-emerald-400"
                   />
                   <label htmlFor="trigger-is-last-occurrence" className="text-xs font-semibold text-gray-800 dark:text-gray-200 cursor-pointer select-none">
                     Esta é a última parcela (encerrar agendamento e não gerar novas cobranças)
@@ -1307,7 +1307,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                 {/* Category selection */}
                 <div className="border-t border-gray-100 dark:border-gray-800 pt-3">
                   <div className="flex items-center justify-between mb-2">
-                    <label htmlFor={!triggerIsSplit ? "trigger-payment-category" : undefined} className="block text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider">
+                    <label htmlFor={!triggerIsSplit ? "trigger-payment-category" : undefined} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Categoria do Lançamento
                     </label>
                     <label htmlFor="trigger-split-toggle" className="flex items-center gap-2 cursor-pointer select-none">
@@ -1316,9 +1316,9 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                         type="checkbox"
                         checked={triggerIsSplit}
                         onChange={(e) => toggleTriggerSplit(e.target.checked)}
-                        className="w-3.5 h-3.5 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer"
+                        className="w-3.5 h-3.5 text-emerald-700 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer dark:text-emerald-400"
                       />
-                      <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                      <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
                         Dividir em Múltiplas Categorias (Split)
                       </span>
                     </label>
@@ -1347,7 +1347,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                         <div key={sidx} className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-end bg-white dark:bg-gray-900 border border-gray-150 dark:border-gray-800 p-2.5 rounded-xl shadow-xs relative">
                           {/* Split Category */}
                           <div>
-                            <label htmlFor={`trigger-split-cat-${sidx}`} className="block text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+                            <label htmlFor={`trigger-split-cat-${sidx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
                               Categoria {sidx + 1}
                             </label>
                             <select
@@ -1372,7 +1372,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
                           {/* Split Amount */}
                           <div>
-                            <label htmlFor={`trigger-split-amount-${sidx}`} className="block text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+                            <label htmlFor={`trigger-split-amount-${sidx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
                               Valor (R$)
                             </label>
                             <input
@@ -1392,7 +1392,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                           {/* Split Memo / Delete */}
                           <div className="flex gap-1.5">
                             <div className="flex-1">
-                              <label htmlFor={`trigger-split-memo-${sidx}`} className="block text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider mb-0.5">
+                              <label htmlFor={`trigger-split-memo-${sidx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5">
                                 Memo
                               </label>
                               <input
@@ -1414,7 +1414,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                                 onClick={() => {
                                   setTriggerSplits(triggerSplits.filter((_, i) => i !== sidx));
                                 }}
-                                className="text-rose-500 hover:text-rose-600 p-1 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 rounded-lg self-end h-[28px] w-[28px] flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500"
+                                className="text-rose-700 hover:text-rose-600 p-2 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 rounded-lg self-end h-[28px] w-[28px] flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-rose-400"
                                 title="Remover"
                                 aria-label={`Remover divisão de categoria ${sidx + 1}`}
                               >
@@ -1431,19 +1431,19 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                           onClick={() => {
                             setTriggerSplits([...triggerSplits, { categoryId: '', amountInput: '', memo: '' }]);
                           }}
-                          className="bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
+                          className="bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
                           aria-label="Adicionar divisão de categoria"
                         >
                           <Plus className="w-3 h-3" />
                           Adicionar Categoria
                         </button>
 
-                        <div className="text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 flex flex-col items-end">
+                        <div className="text-xs font-mono font-bold text-gray-500 dark:text-gray-400 flex flex-col items-end">
                           <span>Total: R$ {triggerAmountInput || '0,00'}</span>
                           <span className={
                             parseAmountToCents(triggerAmountInput) === triggerSplits.reduce((acc, s) => acc + parseAmountToCents(s.amountInput), 0)
-                              ? 'text-emerald-600'
-                              : 'text-amber-600'
+                              ? 'text-emerald-700 dark:text-emerald-400'
+                              : 'text-amber-700 dark:text-amber-400'
                           }>
                             Dividido: R$ {
                               (triggerSplits.reduce((acc, s) => acc + parseAmountToCents(s.amountInput), 0) / 100).toFixed(2).replace('.', ',')
@@ -1468,7 +1468,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
                 <button
                   onClick={confirmTriggerPayment}
                   disabled={loadingId !== null}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white rounded-xl font-bold text-xs shadow-md shadow-emerald-600/15 flex items-center gap-1.5 transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
+                  className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-400 text-white rounded-xl font-bold text-xs shadow-md shadow-emerald-600/15 flex items-center gap-1.5 transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
                 >
                   {loadingId !== null ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <CheckSquare className="w-3.5 h-3.5" />}
                   Confirmar Baixa
@@ -1479,7 +1479,7 @@ export const RecurringBillsManager: React.FC<RecurringBillsManagerProps> = ({
 
           {errorMessage && (
             <div className="bg-white dark:bg-gray-900 rounded-3xl max-w-md w-full p-6 border border-gray-150 dark:border-gray-800 shadow-xl space-y-4" role="alertdialog" aria-modal="true" aria-labelledby="recurring-error-title" aria-live="polite">
-              <div className="flex items-center gap-3 text-rose-600">
+              <div className="flex items-center gap-3 text-rose-700 dark:text-rose-400">
                 <div className="p-2 bg-rose-50 dark:bg-rose-950/30 rounded-xl">
                   <X className="w-6 h-6" />
                 </div>

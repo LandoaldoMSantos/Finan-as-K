@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { integer, pgTable, serial, text, timestamp, boolean, primaryKey } from 'drizzle-orm/pg-core';
+import { integer, pgTable, serial, text, timestamp, boolean, primaryKey, index } from 'drizzle-orm/pg-core';
 
 // Users table (UID is Firebase UID)
 export const users = pgTable('users', {
@@ -23,7 +23,9 @@ export const accounts = pgTable('accounts', {
   type: text('type').default('Corrente').notNull(), // "Corrente" is default
   initialBalance: integer('initial_balance').default(0).notNull(), // Store in cents (e.g. $10.00 = 1000)
   createdAt: timestamp('created_at').defaultNow(),
-});
+}, (t) => [
+  index('accounts_user_idx').on(t.userId),
+]);
 
 // Categories table (with parent-child hierarchy)
 export const categories = pgTable('categories', {
@@ -35,7 +37,9 @@ export const categories = pgTable('categories', {
   type: text('type').notNull(), // 'despesa' or 'receita'
   parentId: integer('parent_id'), // Self-reference for subcategories
   createdAt: timestamp('created_at').defaultNow(),
-});
+}, (t) => [
+  index('categories_user_idx').on(t.userId),
+]);
 
 // Transactions table
 export const transactions = pgTable('transactions', {
@@ -58,7 +62,11 @@ export const transactions = pgTable('transactions', {
   remainingOccurrences: integer('remaining_occurrences'), // number of remaining occurrences (null or 0 means infinite)
   nextDueDate: text('next_due_date'), // Format: YYYY-MM-DD (for planned/scheduled transactions)
   createdAt: timestamp('created_at').defaultNow(),
-});
+}, (t) => [
+  index('transactions_user_recurring_date_idx').on(t.userId, t.isRecurring, t.date.desc(), t.id.desc()),
+  index('transactions_account_date_idx').on(t.accountId, t.date, t.id),
+  index('transactions_category_idx').on(t.categoryId),
+]);
 
 // Tags table
 export const tags = pgTable('tags', {
@@ -68,7 +76,9 @@ export const tags = pgTable('tags', {
     .notNull(),
   name: text('name').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
-});
+}, (t) => [
+  index('tags_user_idx').on(t.userId),
+]);
 
 // Payees table
 export const payees = pgTable('payees', {
@@ -78,7 +88,9 @@ export const payees = pgTable('payees', {
     .notNull(),
   name: text('name').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
-});
+}, (t) => [
+  index('payees_user_idx').on(t.userId),
+]);
 
 // Many-to-many relationship table between Transactions and Tags
 export const transactionTags = pgTable('transaction_tags', {
@@ -89,7 +101,8 @@ export const transactionTags = pgTable('transaction_tags', {
     .references(() => tags.id, { onDelete: 'cascade' })
     .notNull(),
 }, (t) => [
-  primaryKey({ columns: [t.transactionId, t.tagId] })
+  primaryKey({ columns: [t.transactionId, t.tagId] }),
+  index('transaction_tags_tx_idx').on(t.transactionId),
 ]);
 
 // Transaction splits (for multi-category/split transactions)
@@ -103,7 +116,9 @@ export const transactionSplits = pgTable('transaction_splits', {
   amount: integer('amount').notNull(), // Store in cents
   memo: text('memo'),
   createdAt: timestamp('created_at').defaultNow(),
-});
+}, (t) => [
+  index('transaction_splits_tx_idx').on(t.transactionId),
+]);
 
 // Relationships
 export const usersRelations = relations(users, ({ many }) => ({

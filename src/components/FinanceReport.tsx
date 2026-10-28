@@ -681,7 +681,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
     return (
       <span className={`font-mono text-xs ${
         isNegative 
-          ? 'text-rose-600 dark:text-rose-400 font-bold' 
+          ? 'text-rose-700 dark:text-rose-400 font-bold' 
           : useBold ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-700 dark:text-gray-300'
       }`}>
         {isNegative ? '-' : ''}{formatted}
@@ -697,8 +697,8 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
       {/* 1. Page Header Block */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <FileSpreadsheet className="w-7 h-7 text-emerald-600 dark:text-emerald-500 shrink-0" />
+          <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <FileSpreadsheet className="w-7 h-7 text-emerald-700 dark:text-emerald-500 shrink-0" />
             Relatório de Caixa
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -716,7 +716,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
             title="Atualizar dados do relatório"
             aria-label={isRefreshing ? "Atualizando dados..." : "Atualizar dados"}
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-emerald-600' : ''}`} aria-hidden="true" />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-emerald-700 dark:text-emerald-400' : ''}`} aria-hidden="true" />
           </button>
           
           <button
@@ -724,14 +724,14 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
             onClick={handleExportCSV}
             className="flex items-center gap-1.5 px-3.5 py-2.5 bg-white dark:bg-gray-850 border border-gray-200 dark:border-gray-750 text-xs font-bold text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all cursor-pointer shadow-xs focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
-            <Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+            <Download className="w-4 h-4 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
             <span>Exportar CSV</span>
           </button>
 
           <button
             type="button"
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 transition-all cursor-pointer shadow-sm shadow-emerald-500/20 focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-700 text-white text-xs font-bold rounded-xl hover:bg-emerald-800 transition-all cursor-pointer shadow-sm shadow-emerald-500/20 focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             <Printer className="w-4 h-4" aria-hidden="true" />
             <span>Imprimir</span>
@@ -743,8 +743,8 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
       <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 sm:p-6 shadow-xs space-y-4 print:hidden">
         {/* Preset quick buttons */}
         <div className="flex flex-wrap items-center gap-2 pb-3 border-b border-gray-100 dark:border-gray-800">
-          <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mr-1 flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+          <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mr-1 flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
             Atalhos:
           </span>
           <button
@@ -782,7 +782,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
           <div className="flex flex-wrap items-center gap-4">
             {/* Start Date */}
             <div className="flex flex-col gap-1">
-              <label htmlFor="report-start-date" className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <label htmlFor="report-start-date" className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Início do Período
               </label>
               <input
@@ -796,7 +796,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
 
             {/* End Date */}
             <div className="flex flex-col gap-1">
-              <label htmlFor="report-end-date" className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <label htmlFor="report-end-date" className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Fim do Período
               </label>
               <input
@@ -810,7 +810,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
 
             {/* Periodicity accumulation selection */}
             <div className="flex flex-col gap-1">
-              <span id="report-periodicity-label" className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <span id="report-periodicity-label" className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Acúmulo por
               </span>
               <div 
@@ -838,7 +838,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
 
             {/* Show only with movement option */}
             <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Filtro de Atividade</span>
+              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Filtro de Atividade</span>
               <label 
                 htmlFor="report-movement-only"
                 className="flex items-center gap-2 cursor-pointer select-none bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all"
@@ -848,7 +848,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                   type="checkbox"
                   checked={showOnlyWithMovement}
                   onChange={(e) => setShowOnlyWithMovement(e.target.checked)}
-                  className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5 cursor-pointer accent-emerald-600"
+                  className="rounded border-gray-300 text-emerald-700 focus:ring-emerald-500 w-3.5 h-3.5 cursor-pointer accent-emerald-600 dark:text-emerald-400"
                 />
                 <span className="font-semibold text-xs">Ocultar linhas zeradas</span>
               </label>
@@ -867,7 +867,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                 : 'bg-white border-gray-200 text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750'
             }`}
           >
-            <Filter className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+            <Filter className="w-4 h-4 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
             <span>Categorias ({selectedCategoryIds.size}/{categories.length})</span>
             {isCategoryFilterOpen ? <ChevronDown className="w-4 h-4" aria-hidden="true" /> : <ChevronRight className="w-4 h-4" aria-hidden="true" />}
           </button>
@@ -879,13 +879,14 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
             {/* Search bar & quick action buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-gray-50 dark:bg-gray-850 p-3 rounded-2xl border border-gray-150 dark:border-gray-800">
               <div className="relative flex-1 max-w-md">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input
                   type="text"
+                  aria-label="Pesquisar categoria no relatório"
                   placeholder="Pesquisar categoria no relatório..."
                   value={categorySearchQuery}
                   onChange={(e) => setCategorySearchQuery(e.target.value)}
-                  className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl pl-9 pr-3 py-1.5 text-xs text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl pl-9 pr-3 py-1.5 text-xs text-gray-800 dark:text-gray-200 placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-500 outline-none"
                 />
               </div>
 
@@ -893,7 +894,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                 <button
                   type="button"
                   onClick={handleSelectAllCategories}
-                  className="px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg cursor-pointer transition-colors"
+                  className="px-2.5 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg cursor-pointer transition-colors"
                 >
                   Selecionar Tudo
                 </button>
@@ -901,7 +902,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                 <button
                   type="button"
                   onClick={handleDeselectAllCategories}
-                  className="px-2.5 py-1 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg cursor-pointer transition-colors"
+                  className="px-2.5 py-1 text-xs font-bold text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg cursor-pointer transition-colors"
                 >
                   Desmarcar Tudo
                 </button>
@@ -913,7 +914,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
               {/* Receipts group column */}
               <div className="space-y-3 bg-white dark:bg-gray-900 p-4 rounded-2xl border border-gray-150 dark:border-gray-800">
                 <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
-                  <h3 className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <h3 className="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                     <TrendingUp className="w-4 h-4" />
                     Categorias de Receitas
                   </h3>
@@ -921,7 +922,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                     <button
                       type="button"
                       onClick={() => handleToggleGroup('receita', true)}
-                      className="text-[11px] text-gray-500 hover:text-emerald-600 font-semibold"
+                      className="text-xs text-gray-500 hover:text-emerald-600 font-semibold"
                     >
                       Todas
                     </button>
@@ -929,7 +930,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                     <button
                       type="button"
                       onClick={() => handleToggleGroup('receita', false)}
-                      className="text-[11px] text-gray-500 hover:text-rose-500 font-semibold"
+                      className="text-xs text-gray-500 hover:text-rose-500 font-semibold"
                     >
                       Nenhuma
                     </button>
@@ -954,9 +955,9 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                           onClick={() => handleToggleCategory(parent.id, true)}
                         >
                           {isChecked ? (
-                            <CheckSquare className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
+                            <CheckSquare className="w-4 h-4 text-emerald-700 shrink-0 dark:text-emerald-400" aria-hidden="true" />
                           ) : (
-                            <Square className="w-4 h-4 text-gray-400 shrink-0" aria-hidden="true" />
+                            <Square className="w-4 h-4 text-gray-500 shrink-0" aria-hidden="true" />
                           )}
                           <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
                             {parent.name}
@@ -978,9 +979,9 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                                   onClick={() => handleToggleCategory(sub.id, false)}
                                 >
                                   {isSubChecked ? (
-                                    <CheckSquare className="w-3.5 h-3.5 text-emerald-600 shrink-0" aria-hidden="true" />
+                                    <CheckSquare className="w-3.5 h-3.5 text-emerald-700 shrink-0 dark:text-emerald-400" aria-hidden="true" />
                                   ) : (
-                                    <Square className="w-3.5 h-3.5 text-gray-400 shrink-0" aria-hidden="true" />
+                                    <Square className="w-3.5 h-3.5 text-gray-500 shrink-0" aria-hidden="true" />
                                   )}
                                   <span className="text-xs text-gray-600 dark:text-gray-400">
                                     {sub.name}
@@ -1003,9 +1004,9 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                     onClick={() => setIncludeUncategorized(!includeUncategorized)}
                   >
                     {includeUncategorized ? (
-                      <CheckSquare className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
+                      <CheckSquare className="w-4 h-4 text-emerald-700 shrink-0 dark:text-emerald-400" aria-hidden="true" />
                     ) : (
-                      <Square className="w-4 h-4 text-gray-400 shrink-0" aria-hidden="true" />
+                      <Square className="w-4 h-4 text-gray-500 shrink-0" aria-hidden="true" />
                     )}
                     <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 italic">
                       Lançamentos Sem Categoria
@@ -1017,7 +1018,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
               {/* Expenses group column */}
               <div className="space-y-3 bg-white dark:bg-gray-900 p-4 rounded-2xl border border-gray-150 dark:border-gray-800">
                 <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
-                  <h3 className="text-xs font-black text-rose-600 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <h3 className="text-xs font-black text-rose-700 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
                     <TrendingDown className="w-4 h-4" />
                     Categorias de Despesas
                   </h3>
@@ -1025,7 +1026,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                     <button
                       type="button"
                       onClick={() => handleToggleGroup('despesa', true)}
-                      className="text-[11px] text-gray-500 hover:text-emerald-600 font-semibold"
+                      className="text-xs text-gray-500 hover:text-emerald-600 font-semibold"
                     >
                       Todas
                     </button>
@@ -1033,7 +1034,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                     <button
                       type="button"
                       onClick={() => handleToggleGroup('despesa', false)}
-                      className="text-[11px] text-gray-500 hover:text-rose-500 font-semibold"
+                      className="text-xs text-gray-500 hover:text-rose-500 font-semibold"
                     >
                       Nenhuma
                     </button>
@@ -1058,9 +1059,9 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                           onClick={() => handleToggleCategory(parent.id, true)}
                         >
                           {isChecked ? (
-                            <CheckSquare className="w-4 h-4 text-rose-500 shrink-0" aria-hidden="true" />
+                            <CheckSquare className="w-4 h-4 text-rose-700 shrink-0 dark:text-rose-400" aria-hidden="true" />
                           ) : (
-                            <Square className="w-4 h-4 text-gray-400 shrink-0" aria-hidden="true" />
+                            <Square className="w-4 h-4 text-gray-500 shrink-0" aria-hidden="true" />
                           )}
                           <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
                             {parent.name}
@@ -1082,9 +1083,9 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                                   onClick={() => handleToggleCategory(sub.id, false)}
                                 >
                                   {isSubChecked ? (
-                                    <CheckSquare className="w-3.5 h-3.5 text-rose-500 shrink-0" aria-hidden="true" />
+                                    <CheckSquare className="w-3.5 h-3.5 text-rose-700 shrink-0 dark:text-rose-400" aria-hidden="true" />
                                   ) : (
-                                    <Square className="w-3.5 h-3.5 text-gray-400 shrink-0" aria-hidden="true" />
+                                    <Square className="w-3.5 h-3.5 text-gray-500 shrink-0" aria-hidden="true" />
                                   )}
                                   <span className="text-xs text-gray-600 dark:text-gray-400">
                                     {sub.name}
@@ -1109,14 +1110,14 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
         {/* Receitas no Período */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Receitas Acumuladas
             </span>
-            <span className="text-xl font-black font-mono block text-emerald-600 dark:text-emerald-400">
+            <span className="text-xl font-black font-mono block text-emerald-700 dark:text-emerald-400">
               +{formatCurrency(overallTotals.totalIncomesSum)}
             </span>
           </div>
-          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-2xl">
+          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-2xl">
             <TrendingUp className="w-5 h-5" />
           </div>
         </div>
@@ -1124,14 +1125,14 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
         {/* Despesas no Período */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Despesas Acumuladas
             </span>
-            <span className="text-xl font-black font-mono block text-rose-600 dark:text-rose-400">
+            <span className="text-xl font-black font-mono block text-rose-700 dark:text-rose-400">
               -{formatCurrency(overallTotals.totalExpensesSum)}
             </span>
           </div>
-          <div className="p-3 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-2xl">
+          <div className="p-3 bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 rounded-2xl">
             <TrendingDown className="w-5 h-5" />
           </div>
         </div>
@@ -1139,10 +1140,10 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
         {/* Resultado Operacional Líquido */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Resultado Líquido
             </span>
-            <span className={`text-xl font-black font-mono block ${overallTotals.netResultSum >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+            <span className={`text-xl font-black font-mono block ${overallTotals.netResultSum >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
               {overallTotals.netResultSum >= 0 ? '+' : ''}{formatCurrency(overallTotals.netResultSum)}
             </span>
           </div>
@@ -1154,7 +1155,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
         {/* Intervalos & Margem */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Horizonte Temporal
             </span>
             <span className="text-xl font-black font-mono block text-gray-800 dark:text-gray-200">
@@ -1177,21 +1178,21 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-semibold">
             {formatDate(startDateStr)} até {formatDate(endDateStr)}
           </p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-500 uppercase tracking-widest mt-1">
             Valores exibidos em Reais (BRL)
           </p>
         </div>
 
         {/* Mobile scroll hint */}
-        <div className="block sm:hidden text-center py-1.5 text-[11px] text-gray-500 bg-emerald-50/40 dark:bg-emerald-950/20 border-b border-emerald-100 dark:border-emerald-900/30">
+        <div className="block sm:hidden text-center py-1.5 text-xs text-gray-500 bg-emerald-50/40 dark:bg-emerald-950/20 border-b border-emerald-100 dark:border-emerald-900/30">
           ← Deslize horizontalmente para conferir todas as colunas →
         </div>
 
         {/* Scrollable table viewport */}
-        <div className="overflow-x-auto print:overflow-x-visible">
+        <div className="overflow-x-auto print:overflow-x-visible" tabIndex={0} role="region" aria-label="Tabela com rolagem horizontal">
           <table className="w-full border-collapse border-spacing-0" aria-label="Planilha de Relatório de Receitas e Despesas">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 text-left text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <tr className="bg-gray-50 dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 {/* Category Column */}
                 <th scope="col" className="sticky left-0 bg-gray-50 dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 py-3 px-4 z-20 min-w-[220px] shadow-[2px_0_5px_rgba(0,0,0,0.02)] print:static print:shadow-none">
                   Categoria
@@ -1249,7 +1250,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                     <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                       <td className="sticky left-0 bg-white dark:bg-gray-900 border-r border-gray-150 dark:border-gray-800 py-2.5 px-4 z-10 text-xs font-bold text-gray-800 dark:text-gray-200 truncate max-w-[220px] shadow-[2px_0_5px_rgba(0,0,0,0.01)] print:static print:shadow-none">
                         <span className="flex items-center gap-1.5">
-                          <Folder className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <Folder className="w-3.5 h-3.5 text-emerald-700 shrink-0 dark:text-emerald-400" />
                           <span className="truncate">{parent.name}</span>
                         </span>
                       </td>
@@ -1363,7 +1364,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
               <tr className="bg-rose-50/40 dark:bg-rose-950/20 border-y border-rose-200/50 dark:border-rose-800/40">
                 <td 
                   colSpan={buckets.length + 2}
-                  className="py-2 px-4 text-xs font-black text-rose-600 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1.5"
+                  className="py-2 px-4 text-xs font-black text-rose-700 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1.5"
                 >
                   <TrendingDown className="w-3.5 h-3.5" />
                   Despesas
@@ -1396,7 +1397,7 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
                     <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                       <td className="sticky left-0 bg-white dark:bg-gray-900 border-r border-gray-150 dark:border-gray-800 py-2.5 px-4 z-10 text-xs font-bold text-gray-800 dark:text-gray-200 truncate max-w-[220px] shadow-[2px_0_5px_rgba(0,0,0,0.01)] print:static print:shadow-none">
                         <span className="flex items-center gap-1.5">
-                          <Folder className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                          <Folder className="w-3.5 h-3.5 text-rose-700 shrink-0 dark:text-rose-400" />
                           <span className="truncate">{parent.name}</span>
                         </span>
                       </td>
@@ -1532,14 +1533,14 @@ export const FinanceReport: React.FC<FinanceReportProps> = ({
 
         {/* Warning if no columns shown */}
         {buckets.length === 0 && (
-          <div className="text-center py-12 text-gray-400 dark:text-gray-500 flex flex-col items-center justify-center gap-2 p-6">
-            <AlertCircle className="w-8 h-8 text-rose-500" />
+          <div className="text-center py-12 text-gray-500 dark:text-gray-500 flex flex-col items-center justify-center gap-2 p-6">
+            <AlertCircle className="w-8 h-8 text-rose-700 dark:text-rose-400" />
             <p className="text-sm font-semibold">Período de datas inválido ou nenhum intervalo de tempo gerado.</p>
             <p className="text-xs text-gray-500">Por favor, verifique se a data de início é anterior ou igual à data de fim.</p>
             <button
               type="button"
               onClick={() => applyPreset('ano-atual')}
-              className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 cursor-pointer"
+              className="mt-2 px-4 py-2 bg-emerald-700 text-white rounded-xl text-xs font-bold hover:bg-emerald-800 cursor-pointer"
             >
               Restaurar Período Padrão
             </button>

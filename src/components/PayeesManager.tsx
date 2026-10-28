@@ -92,10 +92,10 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <Users className="w-6 h-6 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+        <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <Users className="w-6 h-6 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
           Cadastro de Beneficiários e Origens
-        </h2>
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Gerencie a lista de beneficiários de despesas ou origens de receitas para preenchimento automático rápido e consistente nas transações.
         </p>
@@ -108,7 +108,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
             type="button" 
             onClick={() => setErrorMsg(null)} 
             aria-label="Fechar mensagem de erro"
-            className="text-rose-500 hover:text-rose-700 dark:hover:text-rose-300 p-1 rounded-lg focus-visible:ring-2 focus-visible:ring-rose-500"
+            className="text-rose-700 hover:text-rose-700 dark:hover:text-rose-300 p-2 rounded-lg focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-rose-400"
           >
             <X className="w-4 h-4" aria-hidden="true" />
           </button>
@@ -123,7 +123,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
             <label htmlFor="new-payee-name" className="sr-only">
               Nome do beneficiário
             </label>
-            <Users className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true" />
+            <Users className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-500 dark:text-gray-500" aria-hidden="true" />
             <input
               id="new-payee-name"
               type="text"
@@ -138,7 +138,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
           <button
             type="submit"
             disabled={loading}
-            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/10 shrink-0 focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-400 text-white px-5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/10 shrink-0 focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             {loading ? (
               <>
@@ -160,7 +160,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
             <label htmlFor="search-payee" className="sr-only">
               Buscar beneficiário
             </label>
-            <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true" />
+            <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-500 dark:text-gray-500" aria-hidden="true" />
             <input
               id="search-payee"
               type="text"
@@ -216,7 +216,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
                       onClick={() => handleUpdate(payee.id)}
                       disabled={loading}
                       aria-label={`Salvar alteração para ${payee.name}`}
-                      className="p-1.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500"
+                      className="p-2 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500"
                     >
                       <Check className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -224,14 +224,14 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
                       type="button"
                       onClick={cancelEdit}
                       aria-label="Cancelar edição"
-                      className="p-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-gray-400"
+                      className="p-2 bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-gray-400"
                     >
                       <X className="w-4 h-4" aria-hidden="true" />
                     </button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 flex items-center justify-center font-bold text-sm" aria-hidden="true">
+                    <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 flex items-center justify-center font-bold text-sm" aria-hidden="true">
                       {payee.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -249,7 +249,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
                           type="button"
                           onClick={() => executeDelete(payee.id)}
                           aria-label={`Confirmar exclusão de ${payee.name}`}
-                          className="text-[11px] bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500"
+                          className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500"
                         >
                           Sim
                         </button>
@@ -257,7 +257,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
                           type="button"
                           onClick={() => setDeleteConfirmId(null)}
                           aria-label="Cancelar exclusão"
-                          className="text-[11px] bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400 cursor-pointer"
+                          className="text-xs bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400 cursor-pointer"
                         >
                           Não
                         </button>
@@ -271,7 +271,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
                             startEdit(payee);
                           }}
                           aria-label={`Renomear beneficiário ${payee.name}`}
-                          className="p-2 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
+                          className="p-2 text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
                         >
                           <Edit2 className="w-4 h-4" aria-hidden="true" />
                         </button>
@@ -282,7 +282,7 @@ export const PayeesManager: React.FC<PayeesManagerProps> = ({ payees, onRefresh 
                             setDeleteConfirmId(payee.id);
                           }}
                           aria-label={`Excluir beneficiário ${payee.name}`}
-                          className="p-2 text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-rose-500"
+                          className="p-2 text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-rose-500"
                         >
                           <Trash2 className="w-4 h-4" aria-hidden="true" />
                         </button>

@@ -41,7 +41,7 @@ export const TransactionDeleteModal: React.FC<TransactionDeleteModalProps> = ({
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-rose-100 dark:bg-rose-950/50 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-rose-100 dark:bg-rose-950/50 flex items-center justify-center text-rose-700 dark:text-rose-400 shrink-0">
               <Trash2 className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
@@ -58,7 +58,7 @@ export const TransactionDeleteModal: React.FC<TransactionDeleteModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={isDeleting}
-            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 rounded-lg transition-colors cursor-pointer"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 rounded-lg transition-colors cursor-pointer"
             aria-label="Fechar janela"
           >
             <X className="w-5 h-5" />
@@ -69,7 +69,7 @@ export const TransactionDeleteModal: React.FC<TransactionDeleteModalProps> = ({
         <div className="p-4 bg-gray-50 dark:bg-gray-950/40 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-2.5">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">
                 Beneficiário / Origem
               </span>
               <h4 className="text-sm font-bold text-gray-900 dark:text-white">
@@ -88,19 +88,19 @@ export const TransactionDeleteModal: React.FC<TransactionDeleteModalProps> = ({
 
           <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400 pt-1 border-t border-gray-200/60 dark:border-gray-800/60">
             <div className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5 text-gray-400" />
+              <Calendar className="w-3.5 h-3.5 text-gray-500" />
               <span>{formatDate(transaction.isRecurring ? (transaction.nextDueDate || transaction.date) : transaction.date)}</span>
             </div>
 
             {transaction.account && (
               <div className="flex items-center gap-1">
-                <Wallet className="w-3.5 h-3.5 text-gray-400" />
+                <Wallet className="w-3.5 h-3.5 text-gray-500" />
                 <span>{transaction.account.name}</span>
               </div>
             )}
 
             {transaction.category && (
-              <span className="bg-gray-200/60 dark:bg-gray-800 px-2 py-0.5 rounded text-[10px] font-medium text-gray-700 dark:text-gray-300">
+              <span className="bg-gray-200/60 dark:bg-gray-800 px-2 py-0.5 rounded text-xs font-medium text-gray-700 dark:text-gray-300">
                 {transaction.category.name}
               </span>
             )}

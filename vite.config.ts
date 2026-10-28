@@ -11,6 +11,21 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      target: 'es2022',
+      rollupOptions: {
+        output: {
+          // Split stable vendor code into its own long-cached chunks
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return undefined;
+            if (id.includes('firebase') || id.includes('@firebase')) return 'vendor-firebase';
+            if (id.includes('recharts') || id.includes('d3-') || id.includes('victory')) return 'vendor-charts';
+            if (id.includes('react-dom') || id.includes('/react/') || id.includes('scheduler') || id.includes('@tanstack')) return 'vendor-react';
+            return undefined;
+          },
+        },
+      },
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

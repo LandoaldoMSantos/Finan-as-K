@@ -54,10 +54,10 @@ export const TagsManager: React.FC<TagsManagerProps> = ({ tags, onRefresh }) => 
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <Tag className="w-6 h-6 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+        <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <Tag className="w-6 h-6 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
           Etiquetas e Tags
-        </h2>
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Crie etiquetas para agrupar despesas cruzando categorias (ex: #Ferias2026, #Casamento, #Reembolso)
         </p>
@@ -77,7 +77,7 @@ export const TagsManager: React.FC<TagsManagerProps> = ({ tags, onRefresh }) => 
           <label htmlFor="new-tag-name" className="sr-only">
             Nome da etiqueta
           </label>
-          <Hash className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400 dark:text-gray-500" aria-hidden="true" />
+          <Hash className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-500 dark:text-gray-500" aria-hidden="true" />
           <input
             id="new-tag-name"
             type="text"
@@ -92,7 +92,7 @@ export const TagsManager: React.FC<TagsManagerProps> = ({ tags, onRefresh }) => 
         <button
           type="submit"
           disabled={loading}
-          className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/10 focus-visible:ring-2 focus-visible:ring-emerald-500"
+          className="bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-400 text-white px-5 py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/10 focus-visible:ring-2 focus-visible:ring-emerald-500"
         >
           {loading ? (
             <>
@@ -124,16 +124,16 @@ export const TagsManager: React.FC<TagsManagerProps> = ({ tags, onRefresh }) => 
                 role="listitem"
                 className="flex items-center gap-2 px-3.5 py-2 bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-800 rounded-xl text-sm font-semibold text-gray-800 dark:text-gray-200 transition-all hover:border-gray-300 dark:hover:border-gray-700"
               >
-                <span className="text-emerald-600 dark:text-emerald-400" aria-hidden="true">#</span>
+                <span className="text-emerald-700 dark:text-emerald-400" aria-hidden="true">#</span>
                 <span>{tag.name}</span>
                 {deleteConfirmId === tag.id ? (
                   <div className="flex items-center gap-1.5 ml-1 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-lg border border-rose-200 dark:border-rose-900/50 animate-in fade-in">
-                    <span className="text-[11px] text-rose-700 dark:text-rose-400 font-medium">Excluir?</span>
+                    <span className="text-xs text-rose-700 dark:text-rose-400 font-medium">Excluir?</span>
                     <button
                       type="button"
                       onClick={() => handleDelete(tag.id, tag.name)}
                       aria-label={`Confirmar exclusão de ${tag.name}`}
-                      className="text-[11px] bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 cursor-pointer"
+                      className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 cursor-pointer"
                     >
                       Sim
                     </button>
@@ -141,7 +141,7 @@ export const TagsManager: React.FC<TagsManagerProps> = ({ tags, onRefresh }) => 
                       type="button"
                       onClick={() => setDeleteConfirmId(null)}
                       aria-label="Cancelar exclusão"
-                      className="text-[11px] bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400 cursor-pointer"
+                      className="text-xs bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400 cursor-pointer"
                     >
                       Não
                     </button>
@@ -151,7 +151,7 @@ export const TagsManager: React.FC<TagsManagerProps> = ({ tags, onRefresh }) => 
                     type="button"
                     onClick={() => setDeleteConfirmId(tag.id)}
                     aria-label={`Excluir etiqueta ${tag.name}`}
-                    className="p-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 cursor-pointer"
+                    className="p-2 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                   </button>

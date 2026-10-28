@@ -32,7 +32,17 @@ export function formatDate(dateStr: string): string {
  */
 export function parseAmountToCents(val: string): number {
   if (!val) return 0;
-  const clean = val.replace(/\./g, '').replace(',', '.').trim();
+  let clean = val.replace(/[^\d.,-]/g, '');
+  if (clean.includes(',')) {
+    // pt-BR: "." is the thousands separator and "," the decimal separator
+    clean = clean.replace(/\./g, '').replace(',', '.');
+  } else {
+    const dots = clean.split('.').length - 1;
+    // "1.234.567" or "1.234" are thousands; "1234.56" or "12.5" are decimals
+    if (dots > 1 || (dots === 1 && /\.\d{3}$/.test(clean))) {
+      clean = clean.replace(/\./g, '');
+    }
+  }
   const num = parseFloat(clean);
   if (isNaN(num)) return 0;
   return Math.round(num * 100);

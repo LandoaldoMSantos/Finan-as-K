@@ -328,10 +328,10 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <FolderTree className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <FolderTree className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
             Categorias de Fluxo
-          </h2>
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Organize suas receitas e despesas em uma estrutura hierárquica (Pai e Filho)
           </p>
@@ -340,7 +340,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
         <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
           <button
             onClick={() => openTransferModal(null)}
-            className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-amber-500/10"
+            className="bg-amber-700 hover:bg-amber-800 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-amber-500/10"
           >
             <ArrowLeftRight className="w-4 h-4" />
             Transferir Movimentações
@@ -351,7 +351,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
               setNewCatParentId(null);
               setShowAddForm(!showAddForm);
             }}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/10"
           >
             <Plus className="w-4 h-4" />
             Nova Categoria Pai
@@ -362,7 +362,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
       {errorMsg && (
         <div role="alert" aria-live="polite" className="bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 text-rose-700 dark:text-rose-400 px-4 py-3 rounded-xl flex justify-between items-center text-sm">
           <span>{errorMsg}</span>
-          <button onClick={() => setErrorMsg(null)} aria-label="Fechar mensagem de erro" className="text-rose-500 hover:text-rose-700 dark:hover:text-rose-300 p-1 rounded-lg focus-visible:ring-2 focus-visible:ring-rose-500">
+          <button onClick={() => setErrorMsg(null)} aria-label="Fechar mensagem de erro" className="text-rose-700 hover:text-rose-700 dark:hover:text-rose-300 p-2 rounded-lg focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-rose-400">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -423,7 +423,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
+                className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
                 Adicionar
               </button>
@@ -469,7 +469,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                       <button 
                         onClick={() => toggleParent(parent.id)}
                         aria-label={subs.length > 0 ? (isCollapsed ? `Expandir subcategorias de ${parent.name}` : `Recolher subcategorias de ${parent.name}`) : `Categoria ${parent.name} sem subcategorias`}
-                        className="p-1 hover:bg-gray-150 dark:hover:bg-gray-800 rounded-lg text-gray-400 dark:text-gray-500 transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        className="p-2 hover:bg-gray-150 dark:hover:bg-gray-800 rounded-lg text-gray-500 dark:text-gray-500 transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500"
                       >
                         {subs.length > 0 ? (
                           isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
@@ -492,14 +492,14 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                           <button 
                             onClick={() => handleUpdate(parent.id)}
                             aria-label={`Salvar alteração de ${parent.name}`}
-                            className="p-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                            className="p-2 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 focus-visible:ring-2 focus-visible:ring-emerald-500"
                           >
                             <Check className="w-4 h-4" />
                           </button>
                           <button 
                             onClick={() => setEditingId(null)}
                             aria-label="Cancelar edição"
-                            className="p-1.5 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-lg hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-400"
+                            className="p-2 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-lg hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-400"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -509,7 +509,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                           <span className="font-semibold text-sm text-gray-900 dark:text-white truncate">
                             {parent.name}
                           </span>
-                          <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-2 py-0.5 rounded-full border border-gray-100 dark:border-gray-800">
+                          <span className="text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-2 py-0.5 rounded-full border border-gray-100 dark:border-gray-800">
                             {subs.length === 1 ? '1 subcategoria' : `${subs.length} subcategorias`}
                           </span>
                         </div>
@@ -524,14 +524,14 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                             <button
                               onClick={() => executeDelete(parent.id)}
                               aria-label={`Confirmar exclusão de ${parent.name}`}
-                              className="text-[11px] bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500"
+                              className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500"
                             >
                               Sim
                             </button>
                             <button
                               onClick={() => setDeleteConfirmId(null)}
                               aria-label="Cancelar exclusão"
-                              className="text-[11px] bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400"
+                              className="text-xs bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400"
                             >
                               Não
                             </button>
@@ -542,7 +542,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                               onClick={() => openTransferModal(parent.id)}
                               title="Transferir movimentações desta categoria"
                               aria-label={`Transferir movimentações da categoria ${parent.name}`}
-                              className="p-2 text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950/20 rounded-xl transition-all flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-amber-500"
+                              className="p-2 text-amber-700 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950/20 rounded-xl transition-all flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-amber-500"
                             >
                               <ArrowLeftRight className="w-4 h-4" />
                             </button>
@@ -553,7 +553,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                               }}
                               title="Adicionar subcategoria"
                               aria-label={`Adicionar subcategoria em ${parent.name}`}
-                              className="p-2 text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/20 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
+                              className="p-2 text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/20 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-emerald-500"
                             >
                               <PlusCircle className="w-4 h-4" />
                             </button>
@@ -572,7 +572,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                               }}
                               title="Excluir"
                               aria-label={`Excluir categoria ${parent.name}`}
-                              className="p-2 text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-rose-500"
+                              className="p-2 text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20 rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-rose-500"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -606,14 +606,14 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                                   <button 
                                     onClick={() => handleUpdate(sub.id)}
                                     aria-label={`Salvar alteração de ${sub.name}`}
-                                    className="p-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                                    className="p-2 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 focus-visible:ring-2 focus-visible:ring-emerald-500"
                                   >
                                     <Check className="w-3.5 h-3.5" />
                                   </button>
                                   <button 
                                     onClick={() => setEditingId(null)}
                                     aria-label="Cancelar edição"
-                                    className="p-1.5 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-lg hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-400"
+                                    className="p-2 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-lg hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-400"
                                   >
                                     <X className="w-3.5 h-3.5" />
                                   </button>
@@ -633,14 +633,14 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                                     <button
                                       onClick={() => executeDelete(sub.id)}
                                       aria-label={`Confirmar exclusão de ${sub.name}`}
-                                      className="text-[11px] bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500"
+                                      className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-rose-500"
                                     >
                                       Sim
                                     </button>
                                     <button
                                       onClick={() => setDeleteConfirmId(null)}
                                       aria-label="Cancelar exclusão"
-                                      className="text-[11px] bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400 cursor-pointer"
+                                      className="text-xs bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-md font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-gray-400 cursor-pointer"
                                     >
                                       Não
                                     </button>
@@ -651,7 +651,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                                       onClick={() => openTransferModal(sub.id)}
                                       title="Transferir movimentações desta subcategoria"
                                       aria-label={`Transferir movimentações da subcategoria ${sub.name}`}
-                                      className="p-1.5 text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950/20 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500"
+                                      className="p-2 text-amber-700 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950/20 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500"
                                     >
                                       <ArrowLeftRight className="w-3.5 h-3.5" />
                                     </button>
@@ -659,7 +659,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                                       onClick={() => startEdit(sub)}
                                       title="Editar subcategoria"
                                       aria-label={`Editar subcategoria ${sub.name}`}
-                                      className="p-1.5 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/20 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-blue-500"
+                                      className="p-2 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/20 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-blue-500"
                                     >
                                       <Edit3 className="w-3.5 h-3.5" />
                                     </button>
@@ -670,7 +670,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                                       }}
                                       title="Excluir subcategoria"
                                       aria-label={`Excluir subcategoria ${sub.name}`}
-                                      className="p-1.5 text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-rose-500"
+                                      className="p-2 text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-rose-500"
                                     >
                                       <Trash2 className="w-3.5 h-3.5" />
                                     </button>
@@ -698,7 +698,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-gray-150 dark:border-gray-800">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-200/40">
+                <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 rounded-xl border border-amber-200/40">
                   <ArrowLeftRight className="w-5 h-5" />
                 </div>
                 <div>
@@ -713,7 +713,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
               <button
                 onClick={() => setShowTransferModal(false)}
                 aria-label="Fechar modal de transferência"
-                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:ring-2 focus-visible:ring-amber-500"
+                className="p-2 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:ring-2 focus-visible:ring-amber-500"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -729,7 +729,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
 
             {transferModalSuccess && (
               <div role="status" aria-live="polite" className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 text-emerald-700 dark:text-emerald-400 p-3.5 rounded-xl text-xs flex items-start gap-2">
-                <Check className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
+                <Check className="w-4 h-4 shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400" />
                 <span>{transferModalSuccess}</span>
               </div>
             )}
@@ -739,7 +739,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
               {/* 1. Categoria de Origem (De) */}
               <div className="space-y-1.5">
                 <label htmlFor="transfer-source-cat" className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                  Categoria de Origem (De) <span className="text-rose-500">*</span>
+                  Categoria de Origem (De) <span className="text-rose-700 dark:text-rose-400">*</span>
                 </label>
                 <select
                   id="transfer-source-cat"
@@ -761,9 +761,9 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label htmlFor={destinationMode === 'existing' ? "transfer-dest-cat" : undefined} className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                    Categoria de Destino (Para) <span className="text-rose-500">*</span>
+                    Categoria de Destino (Para) <span className="text-rose-700 dark:text-rose-400">*</span>
                   </label>
-                  <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-0.5 rounded-lg text-[10px]" role="group" aria-label="Modo de destino da categoria">
+                  <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-0.5 rounded-lg text-xs" role="group" aria-label="Modo de destino da categoria">
                     <button
                       type="button"
                       aria-pressed={destinationMode === 'existing'}
@@ -782,7 +782,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                       onClick={() => setDestinationMode('new')}
                       className={`px-2 py-1 rounded-md font-semibold transition-all flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-amber-500 ${
                         destinationMode === 'new'
-                          ? 'bg-amber-500 text-white shadow-xs'
+                          ? 'bg-amber-700 text-white shadow-xs'
                           : 'text-gray-500 dark:text-gray-400 hover:text-gray-800'
                       }`}
                     >
@@ -814,7 +814,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                 ) : (
                   <div className="p-3.5 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-900/30 rounded-xl space-y-3">
                     <div className="space-y-1">
-                      <label htmlFor="new-target-name" className="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+                      <label htmlFor="new-target-name" className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                         Nome da Nova Categoria
                       </label>
                       <input
@@ -830,7 +830,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
 
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <label htmlFor="new-target-parent" className="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+                        <label htmlFor="new-target-parent" className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                           Categoria Pai (Opcional)
                         </label>
                         <select
@@ -852,7 +852,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                       </div>
 
                       <div className="space-y-1">
-                        <label htmlFor="new-target-flow-type" className="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+                        <label htmlFor="new-target-flow-type" className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                           Tipo de Fluxo
                         </label>
                         <select
@@ -882,9 +882,9 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                     type="button"
                     aria-pressed={periodPreset === 'all'}
                     onClick={() => handlePeriodPresetChange('all')}
-                    className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`py-1.5 px-2 text-xs font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
                       periodPreset === 'all'
-                        ? 'bg-amber-500 text-white shadow-xs'
+                        ? 'bg-amber-700 text-white shadow-xs'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
                     }`}
                   >
@@ -894,9 +894,9 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                     type="button"
                     aria-pressed={periodPreset === 'this_month'}
                     onClick={() => handlePeriodPresetChange('this_month')}
-                    className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`py-1.5 px-2 text-xs font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
                       periodPreset === 'this_month'
-                        ? 'bg-amber-500 text-white shadow-xs'
+                        ? 'bg-amber-700 text-white shadow-xs'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
                     }`}
                   >
@@ -906,9 +906,9 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                     type="button"
                     aria-pressed={periodPreset === 'this_year'}
                     onClick={() => handlePeriodPresetChange('this_year')}
-                    className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`py-1.5 px-2 text-xs font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
                       periodPreset === 'this_year'
-                        ? 'bg-amber-500 text-white shadow-xs'
+                        ? 'bg-amber-700 text-white shadow-xs'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
                     }`}
                   >
@@ -918,9 +918,9 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                     type="button"
                     aria-pressed={periodPreset === 'custom'}
                     onClick={() => handlePeriodPresetChange('custom')}
-                    className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`py-1.5 px-2 text-xs font-semibold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
                       periodPreset === 'custom'
-                        ? 'bg-amber-500 text-white shadow-xs'
+                        ? 'bg-amber-700 text-white shadow-xs'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
                     }`}
                   >
@@ -931,7 +931,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                 {periodPreset === 'custom' && (
                   <div className="grid grid-cols-2 gap-3 pt-1 animate-fade-in">
                     <div className="space-y-1">
-                      <label htmlFor="transfer-start-date" className="block text-[10px] font-semibold text-gray-500 dark:text-gray-400">Data Inicial</label>
+                      <label htmlFor="transfer-start-date" className="block text-xs font-semibold text-gray-500 dark:text-gray-400">Data Inicial</label>
                       <input
                         id="transfer-start-date"
                         type="date"
@@ -941,7 +941,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                       />
                     </div>
                     <div className="space-y-1">
-                      <label htmlFor="transfer-end-date" className="block text-[10px] font-semibold text-gray-500 dark:text-gray-400">Data Final</label>
+                      <label htmlFor="transfer-end-date" className="block text-xs font-semibold text-gray-500 dark:text-gray-400">Data Final</label>
                       <input
                         id="transfer-end-date"
                         type="date"
@@ -955,7 +955,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
               </div>
 
               {/* Informative Note */}
-              <div className="bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-900/30 p-3 rounded-xl text-[11px] text-amber-800 dark:text-amber-300 flex items-start gap-2">
+              <div className="bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-900/30 p-3 rounded-xl text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
                 <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                 <p>
                   Considera lançamentos simples (categoria única) e parcelas em lançamentos múltiplos (splits). Os registros serão migrados para a categoria de destino mantendo valores e observações intactos.
@@ -975,7 +975,7 @@ export const CategoriesManager: React.FC<CategoriesManagerProps> = ({
                 <button
                   type="submit"
                   disabled={isTransferring}
-                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-amber-500/10 flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-amber-500"
+                  className="px-5 py-2 bg-amber-700 hover:bg-amber-800 disabled:opacity-50 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-amber-500/10 flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
                   {isTransferring ? (
                     <>

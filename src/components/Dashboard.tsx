@@ -21,7 +21,6 @@ import {
   FileSpreadsheet,
   Layers
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { EmptyState } from './common/EmptyState.tsx';
 
 interface DashboardProps {
@@ -54,6 +53,30 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const concreteTransactions = useMemo(() => {
     return transactions.filter(t => !t.isRecurring && !(t.memo && t.memo.includes('[Agendado]')));
   }, [transactions]);
+
+  // This month vs. the previous month (same day range is not required: whole months)
+  const monthComparison = useMemo(() => {
+    const now = new Date();
+    const key = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const thisKey = key(now);
+    const prevKey = key(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+    const sums = { cur: { in: 0, out: 0 }, prev: { in: 0, out: 0 } };
+    for (const t of concreteTransactions) {
+      const k = t.date.slice(0, 7);
+      const bucket = k === thisKey ? sums.cur : k === prevKey ? sums.prev : null;
+      if (!bucket) continue;
+      if (t.type === 'credito') bucket.in += t.amount; else bucket.out += t.amount;
+    }
+    const pct = (cur: number, prev: number) => (prev > 0 ? Math.round(((cur - prev) / prev) * 100) : null);
+    const rawMonth = now.toLocaleDateString('pt-BR', { month: 'long' });
+    const monthName = rawMonth.charAt(0).toUpperCase() + rawMonth.slice(1);
+    return {
+      monthName,
+      income: { value: sums.cur.in, change: pct(sums.cur.in, sums.prev.in) },
+      expense: { value: sums.cur.out, change: pct(sums.cur.out, sums.prev.out) },
+      net: sums.cur.in - sums.cur.out,
+    };
+  }, [concreteTransactions]);
 
   const creditTransactions = useMemo(() => {
     return concreteTransactions.filter(t => t.type === 'credito');
@@ -195,8 +218,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Top Header & Quick Navigation Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <LayoutDashboard className="w-7 h-7 text-emerald-600 dark:text-emerald-500 shrink-0" />
+          <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <LayoutDashboard className="w-7 h-7 text-emerald-700 dark:text-emerald-500 shrink-0" />
             Visão Geral Financeira
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -210,7 +233,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('transactions')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-emerald-600/20 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-emerald-600/20 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
               <span>Novo Lançamento</span>
@@ -220,7 +243,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onClick={() => onNavigate('forecast')}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-xs focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
-              <Calendar className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+              <Calendar className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
               <span>Ver Previsão</span>
             </button>
           </div>
@@ -232,7 +255,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="p-6 bg-gradient-to-r from-emerald-50/80 via-white to-emerald-50/40 dark:from-emerald-950/30 dark:via-gray-900 dark:to-emerald-950/10 border border-emerald-200/80 dark:border-emerald-800/60 rounded-3xl shadow-sm">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
             <div className="space-y-1.5 max-w-xl">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold">
                 <Sparkles className="w-3.5 h-3.5" />
                 Primeiros Passos
               </div>
@@ -249,7 +272,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate('accounts')}
-                  className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/20 flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/20 flex items-center gap-2 cursor-pointer"
                 >
                   <Building2 className="w-4 h-4" />
                   Cadastrar Conta
@@ -259,7 +282,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   onClick={() => onNavigate('import')}
                   className="px-4 py-2.5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
                 >
-                  <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                   Importar Extrato
                 </button>
               </div>
@@ -268,114 +291,147 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
+      {/* This month at a glance, compared with last month */}
+      <section aria-labelledby="month-glance-title" className="rounded-3xl bg-gradient-to-br from-emerald-700 to-teal-800 text-white p-5 sm:p-6 shadow-lg shadow-emerald-900/10">
+        <h2 id="month-glance-title" className="text-sm font-semibold text-emerald-50">
+          {monthComparison.monthName}: resumo do mês
+        </h2>
+        <dl className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[
+            { label: 'Entradas', value: monthComparison.income.value, change: monthComparison.income.change, goodWhenUp: true },
+            { label: 'Saídas', value: monthComparison.expense.value, change: monthComparison.expense.change, goodWhenUp: false },
+          ].map((item) => {
+            const up = (item.change ?? 0) > 0;
+            const good = item.change === null || item.change === 0 ? null : up === item.goodWhenUp;
+            return (
+              <div key={item.label}>
+                <dt className="text-sm text-emerald-50">{item.label}</dt>
+                <dd className="mt-0.5 flex flex-wrap items-baseline gap-x-2">
+                  <span className="text-2xl font-bold tracking-tight">{formatCurrency(item.value)}</span>
+                  {item.change !== null && (
+                    <span
+                      className={`inline-flex items-center gap-0.5 text-xs font-semibold rounded-full px-2 py-0.5 ${
+                        good === null ? 'bg-white/15' : good ? 'bg-white/20' : 'bg-rose-950/40'
+                      }`}
+                    >
+                      {up ? <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" /> : <TrendingDown className="w-3.5 h-3.5" aria-hidden="true" />}
+                      {up ? '+' : ''}{item.change}%
+                      <span className="sr-only"> em relação ao mês anterior</span>
+                    </span>
+                  )}
+                </dd>
+              </div>
+            );
+          })}
+          <div>
+            <dt className="text-sm text-emerald-50">Saldo do mês</dt>
+            <dd className="mt-0.5 text-2xl font-bold tracking-tight">
+              {monthComparison.net >= 0 ? '+' : ''}{formatCurrency(monthComparison.net)}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
       {/* 4-Card Summary Grid with High Readability & Visual Rhythm */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {/* 1. Saldo Disponível Hoje */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-white dark:bg-gray-900 border border-emerald-200/60 dark:border-emerald-900/40 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all relative overflow-hidden"
+        <div
+          className="motion-safe:hover:-translate-y-0.5 hover:shadow-md bg-white dark:bg-gray-900 border border-emerald-200/60 dark:border-emerald-900/40 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all relative overflow-hidden"
         >
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
-            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Wallet className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
               Saldo Disponível (Hoje)
             </span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
+            <span className="text-xs px-2 py-0.5 rounded-full font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
               {accounts.length} {accounts.length === 1 ? 'conta' : 'contas'}
             </span>
           </div>
 
           <div className="pt-3.5 space-y-2.5">
             <div className={`text-2xl sm:text-3xl font-black font-mono tracking-tight ${
-              totalTodayBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+              totalTodayBalance >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
             }`}>
               {formatCurrency(totalTodayBalance)}
             </div>
 
             <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800/80 text-xs">
-              <span className="text-gray-500 dark:text-gray-400 text-[11px]">Projetado no mês:</span>
+              <span className="text-gray-500 dark:text-gray-400 text-xs">Projetado no mês:</span>
               <span className={`font-mono font-bold text-xs ${
-                totalBalance >= 0 ? 'text-gray-800 dark:text-gray-200' : 'text-rose-600 dark:text-rose-400'
+                totalBalance >= 0 ? 'text-gray-800 dark:text-gray-200' : 'text-rose-700 dark:text-rose-400'
               }`}>
                 {formatCurrency(totalBalance)}
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* 2. Total de Receitas */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all"
+        <div
+          className="motion-safe:hover:-translate-y-0.5 hover:shadow-md bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all"
         >
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
-            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-              <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
               Total de Receitas
             </span>
-            <div className="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
 
           <div className="pt-3.5 space-y-2.5">
-            <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-emerald-700 dark:text-emerald-400">
               +{formatCurrency(totalCredits)}
             </div>
 
-            <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800/80 text-xs text-gray-500 dark:text-gray-400 text-[11px]">
+            <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800/80 text-xs text-gray-500 dark:text-gray-400 text-xs">
               <span>Entradas registradas:</span>
               <span className="font-mono font-bold text-gray-800 dark:text-gray-200">
                 {creditTransactions.length} {creditTransactions.length === 1 ? 'item' : 'itens'}
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* 3. Total de Despesas */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all"
+        <div
+          className="motion-safe:hover:-translate-y-0.5 hover:shadow-md bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all"
         >
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
-            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-              <ArrowUpRight className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <ArrowUpRight className="w-3.5 h-3.5 text-rose-700 dark:text-rose-400" />
               Total de Despesas
             </span>
-            <div className="w-6 h-6 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 flex items-center justify-center">
               <TrendingDown className="w-3.5 h-3.5" />
             </div>
           </div>
 
           <div className="pt-3.5 space-y-2.5">
-            <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-rose-600 dark:text-rose-400">
+            <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-rose-700 dark:text-rose-400">
               -{formatCurrency(totalDebits)}
             </div>
 
-            <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800/80 text-xs text-gray-500 dark:text-gray-400 text-[11px]">
+            <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800/80 text-xs text-gray-500 dark:text-gray-400 text-xs">
               <span>Saídas registradas:</span>
               <span className="font-mono font-bold text-gray-800 dark:text-gray-200">
                 {debitTransactions.length} {debitTransactions.length === 1 ? 'item' : 'itens'}
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* 4. Resultado Líquido Operacional */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all"
+        <div
+          className="motion-safe:hover:-translate-y-0.5 hover:shadow-md bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all"
         >
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
-            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
               <Scale className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               Resultado Operacional
             </span>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+            <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
               netResult >= 0 
                 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60'
                 : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60'
@@ -386,19 +442,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           <div className="pt-3.5 space-y-2.5">
             <div className={`text-2xl sm:text-3xl font-black font-mono tracking-tight ${
-              netResult >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+              netResult >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
             }`}>
               {netResult >= 0 ? '+' : ''}{formatCurrency(netResult)}
             </div>
 
-            <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800/80 text-xs text-gray-500 dark:text-gray-400 text-[11px]">
+            <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800/80 text-xs text-gray-500 dark:text-gray-400 text-xs">
               <span>Taxa de economia:</span>
               <span className="font-mono font-bold text-gray-800 dark:text-gray-200">
                 {totalCredits > 0 ? `${Math.round((netResult / totalCredits) * 100)}%` : '0%'}
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Main Content Grid: Despesas por Categoria + Últimos Lançamentos */}
@@ -410,7 +466,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
               <div className="space-y-0.5">
                 <h3 className="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-                  <PieChart className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <PieChart className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                   Despesas por Categoria
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -480,7 +536,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       </span>
                     </div>
                     <div className="flex items-center gap-2.5 font-mono">
-                      <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-md">
                         {item.percentage}%
                       </span>
                       <span className="font-bold text-gray-900 dark:text-white">
@@ -515,7 +571,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {categoryBreakdown.length > 0 && (
             <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
               <span>Total de despesas categorizadas:</span>
-              <span className="font-mono font-bold text-rose-600 dark:text-rose-400">
+              <span className="font-mono font-bold text-rose-700 dark:text-rose-400">
                 {formatCurrency(totalDebits)}
               </span>
             </div>
@@ -528,7 +584,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
               <div className="space-y-0.5">
                 <h3 className="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Clock className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                   Últimos Lançamentos
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Últimas movimentações financeiras</p>
@@ -538,7 +594,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate('transactions')}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors cursor-pointer"
                 >
                   <span>Ver todas</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -566,14 +622,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   >
                     <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] bg-gray-100 dark:bg-gray-800 border border-gray-200/60 dark:border-gray-700/60 text-gray-600 dark:text-gray-400 font-mono px-1.5 py-0.5 rounded-md shrink-0">
+                        <span className="text-xs bg-gray-100 dark:bg-gray-800 border border-gray-200/60 dark:border-gray-700/60 text-gray-600 dark:text-gray-400 font-mono px-1.5 py-0.5 rounded-md shrink-0">
                           {formatDate(tx.date)}
                         </span>
                         <h4 className="font-bold text-gray-900 dark:text-white truncate">
                           {tx.payee}
                         </h4>
                       </div>
-                      <div className="text-[11px] text-gray-500 dark:text-gray-400 flex items-center gap-1.5 truncate">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 truncate">
                         <span className="truncate">{tx.account ? tx.account.name : 'Sem conta'}</span>
                         <span>•</span>
                         <span className="truncate">{tx.category ? tx.category.name : 'Sem Categoria'}</span>
@@ -613,7 +669,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-gray-800 pb-4">
           <div className="space-y-0.5">
             <h3 className="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <Calendar className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
               Histórico Comparativo por Período
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -678,7 +734,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <span className="font-bold text-xs sm:text-sm text-gray-900 dark:text-white font-mono">
                           {item.period}
                         </span>
-                        <span className="font-bold text-gray-600 dark:text-gray-300 bg-gray-200/60 dark:bg-gray-800 px-2 py-0.5 rounded-full text-[10px] font-mono">
+                        <span className="font-bold text-gray-600 dark:text-gray-300 bg-gray-200/60 dark:bg-gray-800 px-2 py-0.5 rounded-full text-xs font-mono">
                           {item.txs.length} {item.txs.length === 1 ? 'item' : 'itens'}
                         </span>
                       </div>
@@ -686,37 +742,37 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 font-mono text-xs">
                         {/* Receitas */}
                         <div className="text-left sm:text-right">
-                          <span className="text-[9px] font-sans font-bold text-gray-400 dark:text-gray-500 block uppercase tracking-wider">
+                          <span className="text-xs font-sans font-bold text-gray-500 dark:text-gray-500 block uppercase tracking-wider">
                             Receitas
                           </span>
-                          <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="font-bold text-emerald-700 dark:text-emerald-400">
                             +R$ {item.receitas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
                         </div>
 
                         {/* Despesas */}
                         <div className="text-left sm:text-right">
-                          <span className="text-[9px] font-sans font-bold text-gray-400 dark:text-gray-500 block uppercase tracking-wider">
+                          <span className="text-xs font-sans font-bold text-gray-500 dark:text-gray-500 block uppercase tracking-wider">
                             Despesas
                           </span>
-                          <span className="font-bold text-rose-600 dark:text-rose-400">
+                          <span className="font-bold text-rose-700 dark:text-rose-400">
                             -R$ {item.despesas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
                         </div>
 
                         {/* Saldo Líquido do Período */}
                         <div className="text-right pl-1 sm:border-l sm:border-gray-200 dark:sm:border-gray-800 sm:pl-4">
-                          <span className="text-[9px] font-sans font-bold text-gray-400 dark:text-gray-500 block uppercase tracking-wider">
+                          <span className="text-xs font-sans font-bold text-gray-500 dark:text-gray-500 block uppercase tracking-wider">
                             Saldo
                           </span>
                           <span className={`font-bold ${
-                            item.resultado >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                            item.resultado >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
                           }`}>
                             {item.resultado >= 0 ? '+' : ''}R$ {item.resultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
                         </div>
 
-                        <div className="shrink-0 text-gray-400 ml-1">
+                        <div className="shrink-0 text-gray-500 ml-1">
                           {isExpanded ? <ChevronUp className="w-4 h-4" aria-hidden="true" /> : <ChevronDown className="w-4 h-4" aria-hidden="true" />}
                         </div>
                       </div>
@@ -732,20 +788,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           >
                             <div className="space-y-0.5">
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] bg-gray-100 dark:bg-gray-800 border border-gray-200/60 dark:border-gray-700/60 px-2 py-0.5 rounded-md text-gray-600 dark:text-gray-400 font-mono font-semibold">
+                                <span className="text-xs bg-gray-100 dark:bg-gray-800 border border-gray-200/60 dark:border-gray-700/60 px-2 py-0.5 rounded-md text-gray-600 dark:text-gray-400 font-mono font-semibold">
                                   {formatDate(tx.date)}
                                 </span>
                                 <span className="font-bold text-gray-900 dark:text-white">
                                   {tx.payee}
                                 </span>
                               </div>
-                              <span className="text-[11px] text-gray-500 dark:text-gray-400 block truncate max-w-[240px] sm:max-w-lg">
+                              <span className="text-xs text-gray-500 dark:text-gray-400 block truncate max-w-[240px] sm:max-w-lg">
                                 {tx.account && `${tx.account.name} • `}{tx.category ? tx.category.name : 'Sem categoria'} {tx.memo && `• ${tx.memo}`}
                               </span>
                             </div>
 
                             <span className={`font-mono font-bold text-xs sm:text-right ${
-                              tx.type === 'credito' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                              tx.type === 'credito' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
                             }`}>
                               {tx.type === 'credito' ? '+' : '-'}{formatCurrency(tx.amount)}
                             </span>

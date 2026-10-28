@@ -251,10 +251,15 @@ export const api = {
       body: JSON.stringify({ folder, folderId: folderId || null }),
     }),
   listDriveFolders: (accessToken: string, parentId?: string, search?: string) => {
-    let url = `/api/backup/drive/folders?accessToken=${encodeURIComponent(accessToken)}`;
-    if (parentId) url += `&parentId=${encodeURIComponent(parentId)}`;
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-    return fetchAPI<{ folders: Array<{ id: string; name: string; parents?: string[]; modifiedTime?: string }> }>(url);
+    // The Google token travels in a header, never in the URL (URLs end up in logs and history)
+    const query = new URLSearchParams();
+    if (parentId) query.set('parentId', parentId);
+    if (search) query.set('search', search);
+    const qs = query.toString();
+    return fetchAPI<{ folders: Array<{ id: string; name: string; parents?: string[]; modifiedTime?: string }> }>(
+      `/api/backup/drive/folders${qs ? `?${qs}` : ''}`,
+      { headers: { 'X-Google-Token': accessToken } }
+    );
   },
   createDriveFolder: (accessToken: string, folderName: string, parentId?: string) =>
     fetchAPI<{ success: boolean; folder: { id: string; name: string } }>('/api/backup/drive/create-folder', {
@@ -274,14 +279,15 @@ export const api = {
       body: JSON.stringify({ backupData, mode }),
     }),
   listDriveBackups: (accessToken: string, folder?: string, folderId?: string | null) => {
-    let url = `/api/backup/drive/list?accessToken=${encodeURIComponent(accessToken)}`;
-    if (folder) url += `&folder=${encodeURIComponent(folder)}`;
-    if (folderId) url += `&folderId=${encodeURIComponent(folderId)}`;
+    const query = new URLSearchParams();
+    if (folder) query.set('folder', folder);
+    if (folderId) query.set('folderId', folderId);
+    const qs = query.toString();
     return fetchAPI<{ 
       files: Array<{ id: string; name: string; size?: string; createdTime: string }>;
       folder?: string;
       folderId?: string | null;
-    }>(url);
+    }>(`/api/backup/drive/list${qs ? `?${qs}` : ''}`, { headers: { 'X-Google-Token': accessToken } });
   },
   restoreDriveBackup: (fileId: string, accessToken: string, mode: 'replace' | 'merge' = 'replace') =>
     fetchAPI<{ success: boolean; message: string; summary: any }>('/api/backup/drive/restore', {

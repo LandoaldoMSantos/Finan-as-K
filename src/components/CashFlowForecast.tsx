@@ -404,7 +404,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
   const formatCellAmount = (val: number) => {
     const formatted = formatCurrency(val);
     return val < 0 ? (
-      <span className="text-rose-600 dark:text-rose-400 font-bold font-mono">
+      <span className="text-rose-700 dark:text-rose-400 font-bold font-mono">
         {formatted}
       </span>
     ) : (
@@ -436,8 +436,8 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
       {/* 1. Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <Calendar className="w-7 h-7 text-emerald-600 dark:text-emerald-500 shrink-0" />
+          <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <Calendar className="w-7 h-7 text-emerald-700 dark:text-emerald-500 shrink-0" />
             Previsão de Fluxo de Caixa
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -449,7 +449,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
           {/* Account selector */}
           <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl py-1 px-3 shadow-xs text-xs font-semibold">
-            <Filter className="w-3.5 h-3.5 text-emerald-600" />
+            <Filter className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
             <label htmlFor="forecast-filter-account" className="text-gray-500 dark:text-gray-400 font-medium">
               Conta:
             </label>
@@ -507,7 +507,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
       {criticalNegativeDay ? (
         <div className="p-4 sm:p-5 bg-rose-50/90 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-3xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-slide-down">
           <div className="flex items-start gap-3">
-            <div className="p-2.5 bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-300 rounded-2xl shrink-0 mt-0.5 sm:mt-0">
+            <div className="p-2.5 bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 rounded-2xl shrink-0 mt-0.5 sm:mt-0">
               <AlertTriangle className="w-5 h-5 animate-pulse" />
             </div>
             <div className="space-y-0.5">
@@ -533,7 +533,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
       ) : (
         <div className="p-3.5 sm:p-4 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/50 rounded-2xl flex items-center justify-between gap-3 text-xs text-emerald-800 dark:text-emerald-300">
           <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
             <span>
               <strong>Fluxo Positivo:</strong> O saldo projetado permanece seguro e positivo ao longo de todo o período de {projectionDays} dias.
             </span>
@@ -549,13 +549,13 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         {/* Saldo Inicial */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Saldo Inicial (Hoje)
             </span>
-            <span className={`text-xl font-black font-mono block ${stats.start >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>
+            <span className={`text-xl font-black font-mono block ${stats.start >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-700 dark:text-rose-400'}`}>
               {formatCurrency(stats.start)}
             </span>
-            <span className="text-[10px] text-gray-400 block">Ponto de partida atual</span>
+            <span className="text-xs text-gray-500 block">Ponto de partida atual</span>
           </div>
           <div className="p-3 bg-gray-50 dark:bg-gray-850 rounded-2xl text-gray-500">
             <Layers className="w-5 h-5" />
@@ -565,22 +565,22 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         {/* Saldo Final Previsto */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Saldo Final Previsto (+{projectionDays}d)
             </span>
-            <span className={`text-xl font-black font-mono block ${stats.end >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>
+            <span className={`text-xl font-black font-mono block ${stats.end >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-700 dark:text-rose-400'}`}>
               {formatCurrency(stats.end)}
             </span>
-            <span className={`text-[10px] font-mono font-bold flex items-center gap-1 ${
-              stats.variation >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+            <span className={`text-xs font-mono font-bold flex items-center gap-1 ${
+              stats.variation >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
             }`}>
               {stats.variation >= 0 ? '+' : ''}{formatCurrency(stats.variation)} ({stats.start > 0 ? `${Math.round((stats.variation / stats.start) * 100)}%` : '—'})
             </span>
           </div>
           <div className={`p-3 rounded-2xl ${
             stats.end >= stats.start
-              ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400'
-              : 'bg-rose-50 text-rose-600 dark:bg-rose-950/30 dark:text-rose-400'
+              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400'
+              : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400'
           }`}>
             {stats.end >= stats.start ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
           </div>
@@ -589,19 +589,19 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         {/* Entradas e Saídas Futuras */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Movimentação Futura
             </span>
             <div className="flex items-center gap-2 font-mono text-xs">
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+              <span className="text-emerald-700 dark:text-emerald-400 font-bold">
                 +{formatCurrency(totalFutureIncomes)}
               </span>
               <span className="text-gray-300 dark:text-gray-600">/</span>
-              <span className="text-rose-600 dark:text-rose-400 font-bold">
+              <span className="text-rose-700 dark:text-rose-400 font-bold">
                 -{formatCurrency(totalFutureExpenses)}
               </span>
             </div>
-            <span className="text-[10px] text-gray-400 block">
+            <span className="text-xs text-gray-500 block">
               {futureEvents.length} compromissos agendados
             </span>
           </div>
@@ -613,20 +613,20 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         {/* Ponto Crítico / Menor Saldo */}
         <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-5 shadow-xs flex items-center justify-between">
           <div className="space-y-1">
-            <span className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Menor Saldo do Período
             </span>
-            <span className={`text-xl font-black font-mono block ${stats.min >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+            <span className={`text-xl font-black font-mono block ${stats.min >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
               {formatCurrency(stats.min)}
             </span>
-            <span className="text-[10px] text-gray-400 block">
+            <span className="text-xs text-gray-500 block">
               Ocorrência em: {stats.minDate ? formatDate(stats.minDate) : '—'}
             </span>
           </div>
           <div className={`p-3 rounded-2xl ${
             stats.min < 0 
               ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300' 
-              : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400'
+              : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400'
           }`}>
             {stats.min < 0 ? <AlertCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
           </div>
@@ -641,13 +641,17 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
               <h2 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Curva de Tendência de Saldo Diário
               </h2>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
                 Projeção cumulativa para {projectionDays} dias ({filterAccount === 'all' ? 'Todas as Contas' : accounts.find(a => String(a.id) === filterAccount)?.name})
               </p>
             </div>
           </div>
 
-          <div className="h-[250px] w-full">
+          <div
+            className="h-[250px] w-full"
+            role="img"
+            aria-label={`Gráfico de saldo previsto para ${projectionDays} dias: começa em ${formatCurrency(stats.start)}, termina em ${formatCurrency(stats.end)}, mínimo de ${formatCurrency(stats.min)}${stats.minDate ? ` em ${stats.minDate.split('-').reverse().join('/')}` : ''} e máximo de ${formatCurrency(stats.max)}. Os valores diários estão na planilha de saldos projetados abaixo.`}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={projectionData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
@@ -665,13 +669,13 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                   dataKey="formattedDate" 
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: '#9ca3af', fontSize: 10, fontFamily: 'monospace' }}
+                  tick={{ fill: '#6b7280', fontSize: 12 }}
                 />
                 <YAxis 
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(v) => `${(v / 100).toFixed(0)}`}
-                  tick={{ fill: '#9ca3af', fontSize: 10, fontFamily: 'monospace' }}
+                  tick={{ fill: '#6b7280', fontSize: 12 }}
                 />
                 <Tooltip 
                   formatter={(value: any) => [formatCurrency(Number(value)), 'Saldo Previsto']}
@@ -686,7 +690,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                   }}
                   itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
                 />
-                <ReferenceLine y={0} stroke="#f43f5e" strokeDasharray="3 3" opacity={0.7} />
+                <ReferenceLine y={0} stroke="#e11d48" strokeDasharray="3 3" opacity={0.7} />
                 <Area 
                   type="monotone" 
                   dataKey="filtered" 
@@ -706,7 +710,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-emerald-600" />
+              <Layers className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
               Planilha de Saldos Projetados (KMyMoney Style)
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -745,21 +749,21 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
 
         {viewMode === 'grid' ? (
           <>
-            <div className="block sm:hidden text-center py-1.5 text-[11px] text-gray-500 bg-emerald-50/40 dark:bg-emerald-950/20 border-b border-emerald-100 dark:border-emerald-900/30">
+            <div className="block sm:hidden text-center py-1.5 text-xs text-gray-500 bg-emerald-50/40 dark:bg-emerald-950/20 border-b border-emerald-100 dark:border-emerald-900/30">
               ← Deslize horizontalmente para navegar entre as datas →
             </div>
 
             {/* Scrollable grid container */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Tabela com rolagem horizontal">
               <table className="w-full border-collapse border-spacing-0" aria-label="Planilha de Saldos Projetados">
                 <thead>
                   <tr className="bg-gray-50 dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
                     {/* Sticky Left Column */}
-                    <th scope="col" className="sticky left-0 bg-gray-50 dark:bg-gray-950 border-r border-b border-gray-200 dark:border-gray-800 text-left py-3 px-4 text-[10px] font-bold uppercase text-gray-500 dark:text-gray-400 tracking-wider z-20 min-w-[190px] shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
+                    <th scope="col" className="sticky left-0 bg-gray-50 dark:bg-gray-950 border-r border-b border-gray-200 dark:border-gray-800 text-left py-3 px-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 tracking-wider z-20 min-w-[190px] shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
                       Conta
                     </th>
                     {dateStrings.map((date, idx) => (
-                      <th key={date} scope="col" className="py-3 px-4 border-b border-r border-gray-150 dark:border-gray-800 text-center font-bold text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[140px]">
+                      <th key={date} scope="col" className="py-3 px-4 border-b border-r border-gray-150 dark:border-gray-800 text-center font-bold text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[140px]">
                         {getPTColumnHeader(date, idx)}
                       </th>
                     ))}
@@ -774,9 +778,9 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                         onClick={() => setIsTotalExpanded(!isTotalExpanded)}
                         aria-expanded={isTotalExpanded}
                         aria-label={isTotalExpanded ? "Recolher grupo Total" : "Expandir grupo Total"}
-                        className="w-full flex items-center gap-1.5 text-left text-xs text-gray-900 dark:text-white font-bold cursor-pointer rounded-lg p-1 hover:bg-emerald-100/40 dark:hover:bg-emerald-950/50"
+                        className="w-full flex items-center gap-1.5 text-left text-xs text-gray-900 dark:text-white font-bold cursor-pointer rounded-lg p-2 hover:bg-emerald-100/40 dark:hover:bg-emerald-950/50"
                       >
-                        {isTotalExpanded ? <ChevronDown className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" /> : <ChevronRight className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />}
+                        {isTotalExpanded ? <ChevronDown className="w-4 h-4 text-emerald-700 shrink-0 dark:text-emerald-400" aria-hidden="true" /> : <ChevronRight className="w-4 h-4 text-emerald-700 shrink-0 dark:text-emerald-400" aria-hidden="true" />}
                         <span>Total Geral</span>
                       </button>
                     </td>
@@ -803,7 +807,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                             onClick={() => setIsAssetsExpanded(!isAssetsExpanded)}
                             aria-expanded={isAssetsExpanded}
                             aria-label={isAssetsExpanded ? "Recolher grupo Ativo" : "Expandir grupo Ativo"}
-                            className="w-full flex items-center gap-1.5 text-left text-[11px] font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide cursor-pointer rounded-lg p-1 hover:bg-gray-100/50 dark:hover:bg-gray-800"
+                            className="w-full flex items-center gap-1.5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide cursor-pointer rounded-lg p-2 hover:bg-gray-100/50 dark:hover:bg-gray-800"
                           >
                             {isAssetsExpanded ? <ChevronDown className="w-3.5 h-3.5 text-gray-500 shrink-0" aria-hidden="true" /> : <ChevronRight className="w-3.5 h-3.5 text-gray-500 shrink-0" aria-hidden="true" />}
                             <span>Ativo ({assetsAccounts.length})</span>
@@ -847,7 +851,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                             onClick={() => setIsLiabilitiesExpanded(!isLiabilitiesExpanded)}
                             aria-expanded={isLiabilitiesExpanded}
                             aria-label={isLiabilitiesExpanded ? "Recolher grupo Passivo" : "Expandir grupo Passivo"}
-                            className="w-full flex items-center gap-1.5 text-left text-[11px] font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide cursor-pointer rounded-lg p-1 hover:bg-gray-100/50 dark:hover:bg-gray-800"
+                            className="w-full flex items-center gap-1.5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide cursor-pointer rounded-lg p-2 hover:bg-gray-100/50 dark:hover:bg-gray-800"
                           >
                             {isLiabilitiesExpanded ? <ChevronDown className="w-3.5 h-3.5 text-gray-500 shrink-0" aria-hidden="true" /> : <ChevronRight className="w-3.5 h-3.5 text-gray-500 shrink-0" aria-hidden="true" />}
                             <span>Passivo ({liabilitiesAccounts.length})</span>
@@ -909,16 +913,16 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                       <span className="text-xs font-bold text-gray-900 dark:text-white">
                         {getPTColumnHeader(d.date, index)}
                       </span>
-                      <span className="text-[10px] text-gray-400 block font-mono">
+                      <span className="text-xs text-gray-500 block font-mono">
                         {formatDate(d.date)}
                       </span>
                     </div>
 
                     <div className="text-right">
-                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                      <span className="text-xs font-bold text-gray-500 block uppercase tracking-wider">
                         Saldo Projetado
                       </span>
-                      <span className={`text-sm font-bold font-mono ${isNegative ? 'text-rose-600 dark:text-rose-400' : 'text-gray-900 dark:text-white'}`}>
+                      <span className={`text-sm font-bold font-mono ${isNegative ? 'text-rose-700 dark:text-rose-400' : 'text-gray-900 dark:text-white'}`}>
                         {formatCurrency(d.filtered)}
                       </span>
                     </div>
@@ -934,12 +938,12 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                               {ev.payee}
                             </span>
                             {ev.isRecurring && (
-                              <span className="text-[9px] bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 px-1.5 py-0.2 rounded font-semibold">
+                              <span className="text-xs bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.2 rounded font-semibold">
                                 Recorrente
                               </span>
                             )}
                           </div>
-                          <span className={`font-mono font-bold shrink-0 ${ev.type === 'credito' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                          <span className={`font-mono font-bold shrink-0 ${ev.type === 'credito' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
                             {ev.type === 'credito' ? '+' : '-'}{formatCurrency(ev.amount)}
                           </span>
                         </div>
@@ -958,7 +962,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-gray-800">
           <div>
             <h2 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Clock className="w-4 h-4 text-emerald-600" />
+              <Clock className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
               Agenda Cronológica de Eventos ({projectionDays} Dias)
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -998,7 +1002,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
               aria-pressed={eventFilter === 'debito'}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 eventFilter === 'debito'
-                  ? 'bg-white dark:bg-gray-900 text-rose-600 shadow-xs'
+                  ? 'bg-white dark:bg-gray-900 text-rose-700 shadow-xs dark:text-rose-400'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
               }`}
             >
@@ -1010,7 +1014,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
               aria-pressed={eventFilter === 'recurring'}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 eventFilter === 'recurring'
-                  ? 'bg-white dark:bg-gray-900 text-amber-600 shadow-xs'
+                  ? 'bg-white dark:bg-gray-900 text-amber-700 shadow-xs dark:text-amber-400'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
               }`}
             >
@@ -1021,7 +1025,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
         
         {displayedEvents.length === 0 ? (
           <div className="text-center py-8 text-xs text-gray-500 bg-gray-50 dark:bg-gray-850/50 rounded-2xl border border-gray-150 dark:border-gray-800 flex flex-col items-center justify-center gap-2 p-4">
-            <Info className="w-5 h-5 text-gray-400" />
+            <Info className="w-5 h-5 text-gray-500" />
             <p className="font-semibold text-gray-700 dark:text-gray-300">
               Nenhuma movimentação encontrada para o filtro selecionado nos próximos {projectionDays} dias.
             </p>
@@ -1029,7 +1033,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
               <button
                 type="button"
                 onClick={() => onNavigate('recurring')}
-                className="mt-2 text-emerald-600 dark:text-emerald-400 font-bold hover:underline cursor-pointer flex items-center gap-1"
+                className="mt-2 text-emerald-700 dark:text-emerald-400 font-bold hover:underline cursor-pointer flex items-center gap-1"
               >
                 <span>Cadastrar Contas Recorrentes</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -1052,21 +1056,21 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                   className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-gray-50/70 dark:bg-gray-850/40 border border-gray-150 dark:border-gray-800 rounded-2xl hover:border-emerald-500/30 dark:hover:border-emerald-500/30 transition-all gap-2.5"
                 >
                   <div className="flex items-start gap-3 min-w-0">
-                    <span className="font-mono text-[10px] font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-750 text-gray-600 dark:text-gray-300 px-2.5 py-1 rounded-xl shadow-2xs text-center shrink-0 min-w-[95px]">
+                    <span className="font-mono text-xs font-bold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-750 text-gray-600 dark:text-gray-300 px-2.5 py-1 rounded-xl shadow-2xs text-center shrink-0 min-w-[95px]">
                       {formattedDate}
                     </span>
                     <div className="space-y-0.5 min-w-0">
                       <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                         {e.payee}
                       </p>
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-gray-500 dark:text-gray-400">
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">{e.categoryName}</span>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-400">{e.categoryName}</span>
                         <span>•</span>
                         <span className="truncate">{account?.name || 'Conta desconhecida'}</span>
                         {e.isOverdue && (
                           <>
                             <span>•</span>
-                            <span className="bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 font-bold px-1.5 py-0.2 rounded-md text-[10px]">
+                            <span className="bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 font-bold px-1.5 py-0.2 rounded-md text-xs">
                               Atrasado
                             </span>
                           </>
@@ -1074,7 +1078,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                         {e.isRecurring && !e.isOverdue && (
                           <>
                             <span>•</span>
-                            <span className="bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 font-bold px-1.5 py-0.2 rounded-md text-[10px]">
+                            <span className="bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 font-bold px-1.5 py-0.2 rounded-md text-xs">
                               Recorrente
                             </span>
                           </>
@@ -1085,7 +1089,7 @@ export const CashFlowForecast: React.FC<CashFlowForecastProps> = ({
                   
                   <div className="text-right shrink-0">
                     <span className={`font-mono font-bold text-xs ${
-                      e.type === 'credito' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                      e.type === 'credito' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
                     }`}>
                       {e.type === 'credito' ? '+' : '-'}{formatCurrency(e.amount)}
                     </span>

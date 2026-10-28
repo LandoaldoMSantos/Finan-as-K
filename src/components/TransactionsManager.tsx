@@ -350,10 +350,10 @@ export const TransactionsManager: React.FC<TransactionsManagerProps> = ({
       {/* Header & Main Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <ArrowLeftRight className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <ArrowLeftRight className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
             Transações Financeiras
-          </h2>
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Lance despesas, receitas, configure cobranças recorrentes agendadas e consulte seu histórico
           </p>
@@ -365,19 +365,19 @@ export const TransactionsManager: React.FC<TransactionsManagerProps> = ({
             onClick={handleExportCSV}
             className="border border-gray-200 dark:border-gray-800 bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-850 text-gray-700 dark:text-gray-300 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-500" aria-hidden="true" />
+            <FileSpreadsheet className="w-4 h-4 text-emerald-700 dark:text-emerald-500" aria-hidden="true" />
             Exportar CSV
           </button>
           
           {accounts.length === 0 ? (
-            <div className="text-xs text-rose-500 max-w-xs self-center">
+            <div className="text-xs text-rose-700 max-w-xs self-center dark:text-rose-400">
               * Cadastre uma Conta Corrente antes de criar transações.
             </div>
           ) : (
             <button
               type="button"
               onClick={openNewTransactionModal}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/15 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-98"
+              className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-md shadow-emerald-600/15 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-98"
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
               Lançar Transação

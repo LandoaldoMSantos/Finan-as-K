@@ -94,7 +94,7 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
           <h4 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
             Divisão por Categorias (Splits)
           </h4>
-          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             Distribua o valor total do lançamento entre duas ou mais categorias financeiras.
           </p>
         </div>
@@ -103,17 +103,17 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
         <div className="flex items-center gap-2">
           {isBalanced ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-700">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
               100% Distribuído ({formatCurrency(totalCents)})
             </span>
           ) : isUnder ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300/60 dark:border-amber-700">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
               Faltam {formatCurrency(diffCents)}
             </span>
           ) : isOver ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-300/60 dark:border-rose-700">
-              <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+              <AlertCircle className="w-3.5 h-3.5 text-rose-700 dark:text-rose-400" />
               Excede em {formatCurrency(Math.abs(diffCents))}
             </span>
           ) : null}
@@ -129,7 +129,7 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
           >
             {/* Category Select */}
             <div className="sm:col-span-5">
-              <label htmlFor={`split-category-${idx}`} className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+              <label htmlFor={`split-category-${idx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                 Categoria #{idx + 1} *
               </label>
               <select
@@ -152,7 +152,7 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
 
             {/* Amount Input */}
             <div className="sm:col-span-3">
-              <label htmlFor={`split-amount-${idx}`} className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+              <label htmlFor={`split-amount-${idx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                 Valor (R$) *
               </label>
               <input
@@ -172,7 +172,7 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
 
             {/* Memo / Description */}
             <div className="sm:col-span-3">
-              <label htmlFor={`split-memo-${idx}`} className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+              <label htmlFor={`split-memo-${idx}`} className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                 Descrição Específica
               </label>
               <input
@@ -191,7 +191,7 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
                 <button
                   type="button"
                   onClick={() => handleRemoveSplit(idx)}
-                  className="p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500"
+                  className="p-2 text-rose-700 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-rose-400"
                   title="Remover este split"
                   aria-label={`Remover divisão de categoria ${idx + 1}`}
                 >
@@ -224,7 +224,7 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-semibold rounded-xl transition-all shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
               title="Dividir o valor total igualmente entre todas as linhas"
             >
-              <Divide className="w-3.5 h-3.5 text-gray-400" />
+              <Divide className="w-3.5 h-3.5 text-gray-500" />
               Dividir Igualmente
             </button>
           )}
@@ -247,7 +247,7 @@ export const TransactionSplitForm: React.FC<TransactionSplitFormProps> = ({
           </div>
           <div className="text-gray-500 dark:text-gray-400">
             Soma dos Splits: <span className={`font-bold ${
-              isBalanced ? 'text-emerald-600 dark:text-emerald-400' : isOver ? 'text-rose-600' : 'text-amber-600'
+              isBalanced ? 'text-emerald-700 dark:text-emerald-400' : isOver ? 'text-rose-700 dark:text-rose-400' : 'text-amber-700 dark:text-amber-400'
             }`}>{formatCurrency(totalSplitCents)}</span>
           </div>
         </div>

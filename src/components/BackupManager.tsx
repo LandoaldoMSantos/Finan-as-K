@@ -560,8 +560,8 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
     <div className="space-y-8 max-w-5xl animate-fade-in" id="backup-manager-container">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
-          <Cloud className="w-8 h-8 text-emerald-600 dark:text-emerald-500" />
+        <h1 tabIndex={-1} data-page-heading className="outline-none text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
+          <Cloud className="w-8 h-8 text-emerald-700 dark:text-emerald-500" />
           Backup & Restauração de Dados
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
@@ -581,9 +581,9 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
           id="backup-status-banner"
         >
           {statusMessage.type === 'success' ? (
-            <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+            <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
           ) : (
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" aria-hidden="true" />
+            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-rose-700 dark:text-rose-400" aria-hidden="true" />
           )}
           <div>
             <p className="font-semibold">{statusMessage.type === 'success' ? 'Aviso do Sistema' : 'Ocorreu um Erro'}</p>
@@ -597,7 +597,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800 pb-5">
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2.5">
-              <FileJson className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+              <FileJson className="w-5 h-5 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
               Migração e Arquivos Locais (JSON / ZIP)
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -612,9 +612,9 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             id="btn-export-local-json"
           >
             {exportingLocal ? (
-              <Loader2 className="w-4 h-4 animate-spin text-emerald-600" aria-hidden="true" />
+              <Loader2 className="w-4 h-4 animate-spin text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
             ) : (
-              <Download className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+              <Download className="w-4 h-4 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
             )}
             <span>{exportingLocal ? 'Gerando JSON...' : 'Exportar Backup JSON da Base Atual'}</span>
           </button>
@@ -640,6 +640,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             <input
               type="file"
               ref={fileInputRef}
+                aria-label="Selecionar arquivo de backup (.json ou .zip)"
               accept=".json,.zip"
               onChange={(e) => {
                 if (e.target.files && e.target.files[0]) {
@@ -650,7 +651,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               id="input-file-backup-restore"
             />
             <div className="flex flex-col items-center justify-center space-y-2">
-              <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
                 {parsingLocalFile ? (
                   <Loader2 className="w-6 h-6 animate-spin" aria-hidden="true" />
                 ) : (
@@ -661,7 +662,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 Clique para selecionar ou arraste o arquivo de backup aqui
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Formatos aceitos: arquivos de backup exportados em <span className="font-semibold text-emerald-600">.json</span> ou pacotes <span className="font-semibold text-emerald-600">.zip</span> do Google Drive
+                Formatos aceitos: arquivos de backup exportados em <span className="font-semibold text-emerald-700 dark:text-emerald-400">.json</span> ou pacotes <span className="font-semibold text-emerald-700 dark:text-emerald-400">.zip</span> do Google Drive
               </p>
             </div>
           </div>
@@ -671,7 +672,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             <div className="bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl p-5 space-y-4 animate-in fade-in">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <FileArchive className="w-6 h-6 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                  <FileArchive className="w-6 h-6 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   <div>
                     <h3 className="font-bold text-sm text-gray-900 dark:text-white">
                       {localFilePreview.fileName}
@@ -693,7 +694,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   <button
                     type="button"
                     onClick={() => setShowLocalRestoreModal(true)}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
+                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
                     id="btn-open-restore-confirm-modal"
                   >
                     Restaurar Dados na Base Atual
@@ -704,23 +705,23 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               {/* Counts Badge Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
                 <div className="bg-white dark:bg-gray-900 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/30 text-center">
-                  <span className="text-[10px] uppercase font-bold text-gray-400">Contas</span>
+                  <span className="text-xs uppercase font-bold text-gray-500">Contas</span>
                   <p className="text-base font-black text-gray-900 dark:text-white font-mono">{localFilePreview.accountsCount}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/30 text-center">
-                  <span className="text-[10px] uppercase font-bold text-gray-400">Categorias</span>
+                  <span className="text-xs uppercase font-bold text-gray-500">Categorias</span>
                   <p className="text-base font-black text-gray-900 dark:text-white font-mono">{localFilePreview.categoriesCount}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/30 text-center">
-                  <span className="text-[10px] uppercase font-bold text-gray-400">Transações</span>
-                  <p className="text-base font-black text-emerald-600 dark:text-emerald-400 font-mono">{localFilePreview.transactionsCount}</p>
+                  <span className="text-xs uppercase font-bold text-gray-500">Transações</span>
+                  <p className="text-base font-black text-emerald-700 dark:text-emerald-400 font-mono">{localFilePreview.transactionsCount}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/30 text-center">
-                  <span className="text-[10px] uppercase font-bold text-gray-400">Etiquetas</span>
+                  <span className="text-xs uppercase font-bold text-gray-500">Etiquetas</span>
                   <p className="text-base font-black text-gray-900 dark:text-white font-mono">{localFilePreview.tagsCount}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/30 text-center col-span-2 sm:col-span-1">
-                  <span className="text-[10px] uppercase font-bold text-gray-400">Beneficiários</span>
+                  <span className="text-xs uppercase font-bold text-gray-500">Beneficiários</span>
                   <p className="text-base font-black text-gray-900 dark:text-white font-mono">{localFilePreview.payeesCount}</p>
                 </div>
               </div>
@@ -734,12 +735,12 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800 pb-5">
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2.5">
-              <Cloud className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+              <Cloud className="w-5 h-5 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
               Backup & Restauração pelo Google Drive
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Backups salvos no diretório configurado do seu Google Drive. Pasta ativa:{' '}
-              <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">"{savedFolder}"</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-400 font-mono">"{savedFolder}"</span>
             </p>
           </div>
 
@@ -763,15 +764,15 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 <label htmlFor="input-drive-folder" className="text-xs font-bold text-gray-900 dark:text-white">
                   Diretório de Backup no Google Drive
                 </label>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Defina a pasta onde os backups serão gerados e consultados
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-1.5 self-start sm:self-auto">
-              <span className="text-[10px] uppercase font-bold text-gray-400">Status:</span>
-              <span className={`text-[11px] font-mono px-2 py-0.5 rounded-md font-semibold ${
+              <span className="text-xs uppercase font-bold text-gray-500">Status:</span>
+              <span className={`text-xs font-mono px-2 py-0.5 rounded-md font-semibold ${
                 driveFolder.trim() === savedFolder
                   ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60'
                   : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/60'
@@ -783,7 +784,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
 
           <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
             <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
                 <FolderOpen className="w-4 h-4" />
               </div>
               <input
@@ -798,7 +799,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   }
                 }}
                 placeholder="Ex: Finanças K - Backups ou Backups/Finanças"
-                className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-xs sm:text-sm font-mono text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-xs sm:text-sm font-mono text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
               />
             </div>
 
@@ -807,7 +808,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 type="button"
                 onClick={() => handleSaveDriveFolder()}
                 disabled={savingFolder || (driveFolder.trim() === savedFolder && driveFolder.trim().length > 0)}
-                className="flex-1 sm:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-600 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-emerald-500 whitespace-nowrap"
+                className="flex-1 sm:flex-none px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-600 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-emerald-500 whitespace-nowrap"
                 id="btn-save-drive-folder"
                 title="Salvar diretório de destino"
               >
@@ -830,9 +831,9 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 title="Listar e escolher pastas existentes no seu Google Drive"
               >
                 {loadingFolders ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+                  <Loader2 className="w-4 h-4 animate-spin text-emerald-700 dark:text-emerald-400" />
                 ) : (
-                  <FolderPlus className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <FolderPlus className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                 )}
                 <span>Explorar Pastas do Drive</span>
               </button>
@@ -841,7 +842,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
 
           {/* Sugestões rápidas de diretórios */}
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mr-1">Sugestões:</span>
+            <span className="text-xs uppercase font-bold text-gray-500 tracking-wider mr-1">Sugestões:</span>
             {[
               'Finanças K - Backups',
               'Backups/Finanças K',
@@ -855,7 +856,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   setDriveFolder(suggested);
                   handleSaveDriveFolder(suggested);
                 }}
-                className={`text-[11px] font-mono px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
+                className={`text-xs font-mono px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
                   savedFolder === suggested
                     ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 font-semibold shadow-xs'
                     : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700'
@@ -873,7 +874,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             type="button"
             onClick={handleRunBackup}
             disabled={loading}
-            className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-600/50 text-white font-bold py-3 px-5 rounded-2xl flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-lg shadow-emerald-600/10 focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="flex-1 bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-600/50 text-white font-bold py-3 px-5 rounded-2xl flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-lg shadow-emerald-600/10 focus-visible:ring-2 focus-visible:ring-emerald-500"
             id="btn-trigger-backup"
             aria-label={loading ? 'Executando backup no Google Drive' : 'Fazer backup agora para o Google Drive'}
           >
@@ -923,14 +924,14 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-              <History className="w-4 h-4 text-gray-400" />
+              <History className="w-4 h-4 text-gray-500" />
               <span>Backups Disponíveis no Google Drive</span>
-              <span className="font-normal lowercase text-gray-400 font-mono text-[11px]">
+              <span className="font-normal lowercase text-gray-500 font-mono text-xs">
                 (pasta: {savedFolder})
               </span>
             </h3>
             {driveFiles.length > 0 && (
-              <span className="text-xs text-gray-400 font-mono">
+              <span className="text-xs text-gray-500 font-mono">
                 {driveFiles.length} arquivo(s) encontrado(s)
               </span>
             )}
@@ -942,7 +943,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             </div>
           ) : loadingDriveFiles ? (
             <div className="p-8 text-center border border-gray-150 dark:border-gray-800 rounded-2xl bg-gray-50/50 dark:bg-gray-950/20 text-xs text-gray-500 flex items-center justify-center gap-2">
-              <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+              <Loader2 className="w-4 h-4 animate-spin text-emerald-700 dark:text-emerald-400" />
               <span>Buscando backups salvos na pasta "{savedFolder}"...</span>
             </div>
           ) : driveFiles.length === 0 ? (
@@ -958,12 +959,12 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   className="p-3.5 sm:p-4 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-850/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
                   <div className="flex items-center gap-3">
-                    <FileArchive className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <FileArchive className="w-5 h-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                     <div>
                       <p className="text-xs font-bold text-gray-900 dark:text-white font-mono">
                         {file.name}
                       </p>
-                      <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         {formatDate(file.createdTime)} • {formatFileSize(file.size)}
                       </p>
                     </div>
@@ -1009,7 +1010,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             />
             <div className="flex-1">
               <span className="text-sm font-bold text-gray-800 dark:text-gray-200">Backup Semanal no Google Drive</span>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Executado em segundo plano quando conectado.</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Executado em segundo plano quando conectado.</p>
             </div>
           </label>
         </div>
@@ -1017,7 +1018,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-4">
           <div className="space-y-3">
             <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Shield className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+              <Shield className="w-5 h-5 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
               Segurança e Privacidade
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -1025,7 +1026,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             </p>
           </div>
 
-          <div className="p-3 bg-gray-50 dark:bg-gray-950 border border-gray-150 dark:border-gray-850 rounded-2xl text-[11px] text-gray-500 dark:text-gray-400">
+          <div className="p-3 bg-gray-50 dark:bg-gray-950 border border-gray-150 dark:border-gray-850 rounded-2xl text-xs text-gray-500 dark:text-gray-400">
             <span className="font-semibold text-gray-700 dark:text-gray-300">Status atual:</span>{' '}
             {!backupEnabled ? 'Agendamento desativado' : isBackupPending() ? 'Pendente de sincronização' : 'Ativo e atualizado'}
           </div>
@@ -1043,7 +1044,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 sm:p-7 max-w-lg w-full space-y-5 shadow-2xl animate-in zoom-in-95">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-700 dark:text-amber-400">
                   <AlertTriangle className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
@@ -1058,7 +1059,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               <button
                 type="button"
                 onClick={() => setShowLocalRestoreModal(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg cursor-pointer"
+                className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1109,7 +1110,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 type="button"
                 onClick={handleConfirmLocalRestore}
                 disabled={restoringLocal}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
+                className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
                 id="btn-confirm-execute-restore"
               >
                 {restoringLocal ? (
@@ -1137,7 +1138,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 sm:p-7 max-w-lg w-full space-y-5 shadow-2xl animate-in zoom-in-95">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
                   <FolderSync className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
@@ -1152,7 +1153,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               <button
                 type="button"
                 onClick={() => setSelectedDriveFileForRestore(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg cursor-pointer"
+                className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1203,7 +1204,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 type="button"
                 onClick={handleConfirmDriveRestore}
                 disabled={restoringDrive}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
+                className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
                 id="btn-confirm-execute-drive-restore"
               >
                 {restoringDrive ? (
@@ -1233,7 +1234,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3.5 flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-2xl">
+                <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 rounded-2xl">
                   <FolderOpen className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
@@ -1248,7 +1249,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               <button
                 type="button"
                 onClick={() => setShowFolderModal(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+                className="p-1.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                 id="btn-close-folder-modal"
               >
                 <X className="w-5 h-5" />
@@ -1260,10 +1261,10 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               <button
                 type="button"
                 onClick={() => handleNavigateToCrumb(0)}
-                className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold cursor-pointer whitespace-nowrap p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold cursor-pointer whitespace-nowrap p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
                 title="Ir para a Raiz do Google Drive"
               >
-                <HardDrive className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <HardDrive className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
                 <span>Meu Drive</span>
               </button>
 
@@ -1271,7 +1272,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 const isLast = idx === folderBreadcrumbs.length - 2;
                 return (
                   <div key={crumb.id} className="flex items-center gap-1.5 flex-shrink-0">
-                    <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-500" />
                     <button
                       type="button"
                       onClick={() => handleNavigateToCrumb(idx + 1)}
@@ -1291,9 +1292,10 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             {/* Search & Actions Bar */}
             <div className="flex items-center gap-2 flex-shrink-0">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input
                   type="text"
+                  aria-label="Pesquisar pastas no Google Drive"
                   value={folderSearch}
                   onChange={(e) => {
                     const val = e.target.value;
@@ -1307,7 +1309,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                     }
                   }}
                   placeholder="Buscar pasta por nome em todo o Drive..."
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono placeholder-gray-400"
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono placeholder:text-gray-500"
                   id="input-search-drive-folders"
                 />
               </div>
@@ -1330,7 +1332,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 className="px-3 py-2 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-semibold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition-colors whitespace-nowrap"
                 title="Criar nova subpasta neste local"
               >
-                <Plus className="w-3.5 h-3.5 text-emerald-600" />
+                <Plus className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
                 <span>Nova Pasta</span>
               </button>
             </div>
@@ -1338,9 +1340,10 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             {/* In-place New Folder Creator */}
             {showNewFolderInput && (
               <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-150 flex-shrink-0">
-                <FolderPlus className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                <FolderPlus className="w-4 h-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                 <input
                   type="text"
+                  aria-label="Nome da nova pasta"
                   value={newFolderName}
                   onChange={(e) => setNewFolderName(e.target.value)}
                   onKeyDown={(e) => {
@@ -1357,7 +1360,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   type="button"
                   onClick={handleCreateNewFolder}
                   disabled={creatingFolder || !newFolderName.trim()}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 text-white font-bold text-xs rounded-lg cursor-pointer flex items-center gap-1"
+                  className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-gray-300 text-white font-bold text-xs rounded-lg cursor-pointer flex items-center gap-1"
                 >
                   {creatingFolder ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                   <span>Criar</span>
@@ -1365,7 +1368,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 <button
                   type="button"
                   onClick={() => setShowNewFolderInput(false)}
-                  className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg cursor-pointer"
+                  className="p-1.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1376,7 +1379,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             <div className="flex-1 overflow-y-auto min-h-[220px] max-h-[360px] border border-gray-100 dark:border-gray-800 rounded-2xl divide-y divide-gray-100 dark:divide-gray-800/60 p-1">
               {loadingFolders ? (
                 <div className="p-12 text-center text-xs text-gray-500 flex flex-col items-center justify-center gap-2.5">
-                  <Loader2 className="w-5 h-5 animate-spin text-emerald-600" />
+                  <Loader2 className="w-5 h-5 animate-spin text-emerald-700 dark:text-emerald-400" />
                   <span>Navegando no Google Drive...</span>
                 </div>
               ) : availableFolders.length === 0 ? (
@@ -1385,7 +1388,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   <p className="font-semibold text-gray-700 dark:text-gray-300">
                     {folderSearch ? 'Nenhuma pasta encontrada com esse termo.' : 'Nenhuma subpasta encontrada aqui.'}
                   </p>
-                  <p className="text-[11px]">
+                  <p className="text-xs">
                     Você pode usar o botão <strong>"Nova Pasta"</strong> acima para criar uma subpasta aqui ou selecionar esta pasta aberta como destino.
                   </p>
                 </div>
@@ -1413,10 +1416,10 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                       <button
                         type="button"
                         onClick={() => handleNavigateIntoFolder(f)}
-                        className="flex items-center gap-2.5 flex-1 min-w-0 text-left cursor-pointer p-1 rounded hover:opacity-80 transition-opacity"
+                        className="flex items-center gap-2.5 flex-1 min-w-0 text-left cursor-pointer p-2 rounded hover:opacity-80 transition-opacity"
                         title={`Entrar na pasta "${f.name}"`}
                       >
-                        <Folder className={`w-4 h-4 flex-shrink-0 ${isSelected ? 'text-emerald-600' : 'text-amber-500'}`} />
+                        <Folder className={`w-4 h-4 flex-shrink-0 ${isSelected ? 'text-emerald-700 dark:text-emerald-400' : 'text-amber-500'}`} />
                         <span className="text-xs font-semibold font-mono text-gray-900 dark:text-gray-100 truncate">
                           {f.name}
                         </span>
@@ -1429,7 +1432,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                         onClick={() => handleSelectFolderFromPicker(f)}
                         className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                           isSelected
-                            ? 'bg-emerald-600 text-white shadow-xs'
+                            ? 'bg-emerald-700 text-white shadow-xs'
                             : 'bg-gray-100 dark:bg-gray-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-300 border border-gray-200 dark:border-gray-700'
                         }`}
                         title="Escolher esta pasta como destino dos backups"
@@ -1451,7 +1454,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
 
             {/* Modal footer with current folder confirmation and dismissal */}
             <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 flex-shrink-0">
-              <div className="text-[11px] text-gray-500 truncate">
+              <div className="text-xs text-gray-500 truncate">
                 Pasta aberta:{' '}
                 <span className="font-mono font-bold text-gray-800 dark:text-gray-200">
                   {folderBreadcrumbs.length > 1 
@@ -1465,7 +1468,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   <button
                     type="button"
                     onClick={handleSelectCurrentOpenFolder}
-                    className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+                    className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Usar Pasta Atual Aberta</span>
