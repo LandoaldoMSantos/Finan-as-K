@@ -1885,15 +1885,22 @@ async function startServer() {
     });
   }
 
-  // GET: Export complete database backup as JSON
+  // GET: Export complete database backup as a .zip (database_backup.json inside)
   app.get('/api/backup/export', requireAuth, async (req: AuthRequest, res) => {
     try {
       const dbUserId = req.dbUser!.id;
       const backupData = await getUserBackupPayload(dbUserId, req.dbUser!.email);
       const dateStr = new Date().toISOString().split('T')[0];
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', `attachment; filename="backup_financas_k_${dateStr}.json"`);
-      res.json(backupData);
+
+      // Only the database goes into the backup, compressed as a .zip
+      const zip = new JSZip();
+      zip.file('database_backup.json', JSON.stringify(backupData, null, 2));
+      const zipBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE', compressionOptions: { level: 9 } });
+
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', `attachment; filename="backup_financas_k_${dateStr}.zip"`);
+      res.setHeader('Content-Length', String(zipBuffer.length));
+      res.send(zipBuffer);
     } catch (error: any) {
       console.error('Error exporting backup:', error);
       res.status(500).json({ error: error.message });
@@ -2150,7 +2157,7 @@ async function startServer() {
       // Add database JSON file
       zip.file('database_backup.json', JSON.stringify(databaseBackupData, null, 2));
 
-      const zipBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
+      const zipBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE', compressionOptions: { level: 9 } });
 
       // 3. Resolve destination folder on user's Google Drive
       // Prefer explicit folderId from body or saved ID (stable), fall back to name-based getOrCreate

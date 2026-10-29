@@ -364,7 +364,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
 
       setStatusMessage({
         type: 'success',
-        text: 'Compactando base de dados financeira e arquivos de código...'
+        text: 'Compactando a base de dados financeira em .zip...'
       });
 
       const targetFolder = savedFolder || driveFolder;
@@ -394,24 +394,22 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
     }
   };
 
-  // Export local JSON file directly to user's computer
-  const handleExportLocalJson = async () => {
+  // Export the database only, compressed as a .zip, directly to the user's computer
+  const handleExportLocalZip = async () => {
     setExportingLocal(true);
     try {
-      const backupData = await api.exportBackupJson();
+      const { blob, filename } = await api.exportBackupZip();
       const dateStr = new Date().toISOString().split('T')[0];
-      const jsonStr = JSON.stringify(backupData, null, 2);
-      const blob = new Blob([jsonStr], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `backup_financas_k_${dateStr}.json`;
+      a.download = filename || `backup_financas_k_${dateStr}.zip`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast.success('Arquivo de backup (.json) exportado com sucesso!');
+      toast.success('Backup da base de dados (.zip) exportado com sucesso!');
     } catch (err: any) {
       console.error('Erro ao exportar backup local:', err);
       toast.error(`Falha ao exportar backup: ${err.message}`);
@@ -598,7 +596,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2.5">
               <FileJson className="w-5 h-5 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
-              Migração e Arquivos Locais (JSON / ZIP)
+              Migração e Arquivos Locais (ZIP)
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Método mais rápido para transferir dados: baixe o arquivo em Produção e restaure aqui em Desenvolvimento.
@@ -606,7 +604,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
           </div>
           <button
             type="button"
-            onClick={handleExportLocalJson}
+            onClick={handleExportLocalZip}
             disabled={exportingLocal}
             className="self-start sm:self-auto bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 font-bold py-2.5 px-4 rounded-xl flex items-center gap-2 text-xs transition-all cursor-pointer border border-gray-200 dark:border-gray-700 focus-visible:ring-2 focus-visible:ring-emerald-500"
             id="btn-export-local-json"
@@ -616,7 +614,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
             ) : (
               <Download className="w-4 h-4 text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
             )}
-            <span>{exportingLocal ? 'Gerando JSON...' : 'Exportar Backup JSON da Base Atual'}</span>
+            <span>{exportingLocal ? 'Compactando base de dados...' : 'Exportar Backup da Base (.zip)'}</span>
           </button>
         </div>
 
@@ -662,7 +660,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 Clique para selecionar ou arraste o arquivo de backup aqui
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Formatos aceitos: arquivos de backup exportados em <span className="font-semibold text-emerald-700 dark:text-emerald-400">.json</span> ou pacotes <span className="font-semibold text-emerald-700 dark:text-emerald-400">.zip</span> do Google Drive
+                Formatos aceitos: backups <span className="font-semibold text-emerald-700 dark:text-emerald-400">.zip</span> (download ou Google Drive) e arquivos <span className="font-semibold text-emerald-700 dark:text-emerald-400">.json</span> de backups antigos
               </p>
             </div>
           </div>
@@ -1022,7 +1020,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
               Segurança e Privacidade
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-              Todos os seus backups contêm registros completos em formato legível (JSON) e código-fonte, gravados exclusivamente na sua própria conta privada do Google Drive.
+              Todos os seus backups contêm apenas a base de dados (database_backup.json), compactada em .zip e gravada exclusivamente na sua própria conta privada do Google Drive.
             </p>
           </div>
 
@@ -1057,6 +1055,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 </div>
               </div>
               <button
+            aria-label="Fechar"
                 type="button"
                 onClick={() => setShowLocalRestoreModal(false)}
                 className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg cursor-pointer"
@@ -1151,6 +1150,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 </div>
               </div>
               <button
+            aria-label="Fechar"
                 type="button"
                 onClick={() => setSelectedDriveFileForRestore(null)}
                 className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg cursor-pointer"
@@ -1247,6 +1247,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                 </div>
               </div>
               <button
+            aria-label="Fechar"
                 type="button"
                 onClick={() => setShowFolderModal(false)}
                 className="p-1.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
@@ -1366,6 +1367,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
                   <span>Criar</span>
                 </button>
                 <button
+            aria-label="Fechar"
                   type="button"
                   onClick={() => setShowNewFolderInput(false)}
                   className="p-1.5 text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg cursor-pointer"

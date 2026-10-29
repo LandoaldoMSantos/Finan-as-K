@@ -6,6 +6,30 @@ export function setAuthToken(token: string | null) {
   apiToken = token;
 }
 
+/** Authenticated download of a binary file (e.g. the .zip backup). Returns the blob and suggested filename. */
+async function fetchFile(endpoint: string): Promise<{ blob: Blob; filename: string | null }> {
+  const send = async (forceRefresh: boolean) => {
+    const headers = new Headers();
+    if (auth.currentUser) {
+      apiToken = await auth.currentUser.getIdToken(forceRefresh);
+    }
+    if (apiToken) headers.set('Authorization', `Bearer ${apiToken}`);
+    return fetch(endpoint, { headers });
+  };
+
+  let response = await send(false);
+  if (response.status === 401 && auth.currentUser) {
+    response = await send(true);
+  }
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error || `Erro HTTP! status: ${response.status}`);
+  }
+  const disposition = response.headers.get('content-disposition') || '';
+  const match = disposition.match(/filename="?([^";]+)"?/i);
+  return { blob: await response.blob(), filename: match ? match[1] : null };
+}
+
 async function fetchAPI<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers || {});
   
@@ -271,8 +295,7 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ accessToken, folder, folderId: folderId || null }),
     }),
-  exportBackupJson: () =>
-    fetchAPI<any>('/api/backup/export'),
+  exportBackupZip: () => fetchFile('/api/backup/export'),
   restoreBackup: (backupData: any, mode: 'replace' | 'merge' = 'replace') =>
     fetchAPI<{ success: boolean; message: string; summary: any }>('/api/backup/restore', {
       method: 'POST',

@@ -14,7 +14,7 @@ Data: 28/10/2026. Base: cópia da pasta `Finan-as-K` desta data. O diff completo
 - **Tema escuro**: o Tailwind 4 aplicava `dark:` pela preferência do sistema, não pela classe; o botão de tema não mudava as cores. Corrigido com `@custom-variant dark`.
 - **Classes inexistentes**: `gray-150/850/750/450/55`, `emerald-150/250`, `amber-250`, `rose-150/750` e as animações `animate-fade-in`, `animate-scale-in`, `animate-slide-down`, `animate-spin-once` e `animate-in` agora existem.
 - **Token do Google Drive** saía na URL; agora vai no cabeçalho `X-Google-Token`, e o servidor não aceita mais na URL.
-- **Backup no Drive** não inclui mais o código-fonte do app, só os dados.
+- **Backup** (download e Google Drive) contém só a base de dados (`database_backup.json`), compactada em `.zip`. A restauração aceita esse `.zip` e também os `.json` de backups antigos.
 - **Restauração de backup** no modo "substituir" apagava tudo antes de inserir; uma falha no meio deixava a conta vazia. Agora é tudo ou nada (transação SQL), testado com um backup inválido.
 - **Edição de lançamento** permitia mover para uma conta de outro usuário, e etiquetas de outro usuário podiam ser vinculadas. Ambos bloqueados.
 - `lang="pt-BR"` no HTML.
