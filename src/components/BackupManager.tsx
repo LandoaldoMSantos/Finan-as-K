@@ -139,6 +139,7 @@ export const BackupManager: React.FC<BackupManagerProps> = ({ onRefresh }) => {
       setDriveFiles(res.files || []);
     } catch (error: any) {
       console.error('Erro ao listar backups do Google Drive:', error);
+      toast.error(`Não foi possível listar os backups do Google Drive: ${error.message}`);
     } finally {
       setLoadingDriveFiles(false);
     }

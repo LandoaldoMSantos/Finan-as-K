@@ -274,17 +274,12 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ folder, folderId: folderId || null }),
     }),
-  listDriveFolders: (accessToken: string, parentId?: string, search?: string) => {
-    // The Google token travels in a header, never in the URL (URLs end up in logs and history)
-    const query = new URLSearchParams();
-    if (parentId) query.set('parentId', parentId);
-    if (search) query.set('search', search);
-    const qs = query.toString();
-    return fetchAPI<{ folders: Array<{ id: string; name: string; parents?: string[]; modifiedTime?: string }> }>(
-      `/api/backup/drive/folders${qs ? `?${qs}` : ''}`,
-      { headers: { 'X-Google-Token': accessToken } }
-    );
-  },
+  // The Google token travels in the POST body, never in the URL (URLs end up in logs and history)
+  listDriveFolders: (accessToken: string, parentId?: string, search?: string) =>
+    fetchAPI<{ folders: Array<{ id: string; name: string; parents?: string[]; modifiedTime?: string }> }>('/api/backup/drive/folders', {
+      method: 'POST',
+      body: JSON.stringify({ accessToken, parentId, search }),
+    }),
   createDriveFolder: (accessToken: string, folderName: string, parentId?: string) =>
     fetchAPI<{ success: boolean; folder: { id: string; name: string } }>('/api/backup/drive/create-folder', {
       method: 'POST',
@@ -301,17 +296,15 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ backupData, mode }),
     }),
-  listDriveBackups: (accessToken: string, folder?: string, folderId?: string | null) => {
-    const query = new URLSearchParams();
-    if (folder) query.set('folder', folder);
-    if (folderId) query.set('folderId', folderId);
-    const qs = query.toString();
-    return fetchAPI<{ 
+  listDriveBackups: (accessToken: string, folder?: string, folderId?: string | null) =>
+    fetchAPI<{ 
       files: Array<{ id: string; name: string; size?: string; createdTime: string }>;
       folder?: string;
       folderId?: string | null;
-    }>(`/api/backup/drive/list${qs ? `?${qs}` : ''}`, { headers: { 'X-Google-Token': accessToken } });
-  },
+    }>('/api/backup/drive/list', {
+      method: 'POST',
+      body: JSON.stringify({ accessToken, folder, folderId: folderId || undefined }),
+    }),
   restoreDriveBackup: (fileId: string, accessToken: string, mode: 'replace' | 'merge' = 'replace') =>
     fetchAPI<{ success: boolean; message: string; summary: any }>('/api/backup/drive/restore', {
       method: 'POST',

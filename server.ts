@@ -1931,15 +1931,27 @@ async function startServer() {
 
   // GET: List existing folders in Google Drive for directory selection
   // Supports: parentId (to browse into folders), search (to query anywhere), or root listing
-  app.get('/api/backup/drive/folders', requireAuth, async (req: AuthRequest, res) => {
+  // The Google token is read from the POST body (preferred: survives any proxy) or the X-Google-Token header.
+  // It is never accepted in the URL, which would leak it into logs.
+  const googleTokenFrom = (req: AuthRequest) =>
+    ((req.body && typeof req.body.accessToken === 'string' && req.body.accessToken) ||
+      (req.headers['x-google-token'] as string) ||
+      '').trim();
+  // Listing parameters may come from the POST body or the query string
+  const listParam = (req: AuthRequest, key: string) => {
+    const v = (req.body && req.body[key]) ?? req.query[key];
+    return typeof v === 'string' ? v.trim() : undefined;
+  };
+
+  const listDriveFoldersHandler = async (req: AuthRequest, res: express.Response) => {
     try {
-      const accessToken = (req.headers['x-google-token'] as string);
+      const accessToken = googleTokenFrom(req);
       if (!accessToken) {
         return res.status(400).json({ error: 'Token do Google Drive não fornecido.' });
       }
 
-      const parentId = (req.query.parentId as string)?.trim();
-      const search = (req.query.search as string)?.trim();
+      const parentId = listParam(req, 'parentId');
+      const search = listParam(req, 'search');
 
       let queryParts = [
         "mimeType = 'application/vnd.google-apps.folder'",
@@ -1972,7 +1984,9 @@ async function startServer() {
       console.error('Error listing Google Drive folders:', error);
       res.status(500).json({ error: error.message });
     }
-  });
+  };
+  app.get('/api/backup/drive/folders', requireAuth, listDriveFoldersHandler);
+  app.post('/api/backup/drive/folders', requireAuth, listDriveFoldersHandler);
 
   // POST: Create a new folder inside a specific parent in Google Drive
   app.post('/api/backup/drive/create-folder', requireAuth, async (req: AuthRequest, res) => {
@@ -2014,17 +2028,17 @@ async function startServer() {
   });
 
   // GET: List backups found in Google Drive in the configured folder
-  app.get('/api/backup/drive/list', requireAuth, async (req: AuthRequest, res) => {
+  const listDriveBackupsHandler = async (req: AuthRequest, res: express.Response) => {
     try {
       const dbUserId = req.dbUser!.id;
-      const accessToken = (req.headers['x-google-token'] as string);
+      const accessToken = googleTokenFrom(req);
       if (!accessToken) {
         return res.status(400).json({ error: 'Token do Google Drive não fornecido.' });
       }
 
       // Prefer explicit query params, then user's saved folder ID, then name-based lookup
-      let targetFolder = (req.query.folder as string)?.trim();
-      let folderId = (req.query.folderId as string)?.trim() || null;
+      let targetFolder = listParam(req, 'folder');
+      let folderId = listParam(req, 'folderId') || null;
 
       if (!folderId || !targetFolder) {
         const [userRecord] = await db.select({
@@ -2069,7 +2083,9 @@ async function startServer() {
       console.error('Error listing Google Drive backups:', error);
       res.status(500).json({ error: error.message });
     }
-  });
+  };
+  app.get('/api/backup/drive/list', requireAuth, listDriveBackupsHandler);
+  app.post('/api/backup/drive/list', requireAuth, listDriveBackupsHandler);
 
   // POST: Restore backup directly from Google Drive
   app.post('/api/backup/drive/restore', requireAuth, async (req: AuthRequest, res) => {
